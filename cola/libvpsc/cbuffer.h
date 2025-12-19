@@ -29,9 +29,9 @@ namespace vpsc {
     class CBuffer {
     public:
         CBuffer(std::vector<Constraint*>& l,
-                const unsigned maxsize=5) 
-                 : master_list(l), maxsize(maxsize), size(0) {
-            buffer.resize(maxsize);
+                const unsigned maxsize_=5) 
+                 : master_list(l), maxsize(maxsize_), size(0) {
+            buffer.resize(maxsize_);
             load();
         }
         void reset() { size=0; }

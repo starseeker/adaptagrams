@@ -303,16 +303,16 @@ public:
      *
      * @param[in] ccs  The compound constraints.
      */
-    void setConstraints(cola::CompoundConstraints* ccs) {
+    void setConstraints(cola::CompoundConstraints* ccs_) {
         constrainedLayout = true;
-        this->ccs=ccs;
+        this->ccs=ccs_;
     }
 
-    void setConstraintsVector(cola::CompoundConstraints& ccs) {
+    void setConstraintsVector(cola::CompoundConstraints& ccs_) {
         constrainedLayout = true;
         cola::CompoundConstraints *ccsp = new cola::CompoundConstraints;
-        for (size_t i = 0; i < ccs.size(); ++i) {
-            ccsp->push_back(ccs.at(i));
+        for (size_t i = 0; i < ccs_.size(); ++i) {
+            ccsp->push_back(ccs_.at(i));
         }
         this->ccs=ccsp;
     }
@@ -333,10 +333,10 @@ public:
      *                           unsatisfiable constraints in the y-dimension.
      */
     void setUnsatisfiableConstraintInfo(
-            UnsatisfiableConstraintInfos *unsatisfiableX,
-            UnsatisfiableConstraintInfos *unsatisfiableY) {
-        this->unsatisfiableX = unsatisfiableX;
-        this->unsatisfiableY = unsatisfiableY;
+            UnsatisfiableConstraintInfos *unsatisfiableX_,
+            UnsatisfiableConstraintInfos *unsatisfiableY_) {
+        this->unsatisfiableX = unsatisfiableX_;
+        this->unsatisfiableY = unsatisfiableY_;
     }
     /**
      * Sticky nodes causes nodes to spring back to (startX,startY) when 
@@ -349,15 +349,15 @@ public:
     /**
      * Scaling speeds up the solver by conditioning the quadratic terms matrix.
      */
-    void setScaling(bool scaling) {
-        this->scaling=scaling;
+    void setScaling(bool scaling_) {
+        this->scaling=scaling_;
     }
     /**
      * Says that the Mosek optimisation library should be used to solve the 
      * quadratic programs rather than the libvpsc solver.
      */
-    void setExternalSolver(bool externalSolver) {
-        this->externalSolver=externalSolver;
+    void setExternalSolver(bool externalSolver_) {
+        this->externalSolver=externalSolver_;
     }
     /**
      * At each iteration of layout, generate constraints to avoid overlaps.
@@ -382,18 +382,18 @@ public:
      * try to straighten existing bends potBendWeight controls how much we try
      * to keep straight edges straight
      */
-    void setStraightenEdges(std::vector<straightener::Edge*>* straightenEdges, 
-            double bendWeight = 0.01, double potBendWeight = 0.1,
-            bool xSkipping = true) {
-        for(std::vector<straightener::Edge*>::const_iterator e=straightenEdges->begin();
-                e!=straightenEdges->end();e++) {
+    void setStraightenEdges(std::vector<straightener::Edge*>* straightenEdges_, 
+            double bendWeight_ = 0.01, double potBendWeight_ = 0.1,
+            bool xSkipping_ = true) {
+        for(std::vector<straightener::Edge*>::const_iterator e=straightenEdges_->begin();
+                e!=straightenEdges_->end();e++) {
             (*e)->rerouteAround(boundingBoxes);
         }
         constrainedLayout = true;
-        this->xSkipping = xSkipping;
-        this->straightenEdges = straightenEdges;
-        this->bendWeight = bendWeight;
-        this->potBendWeight = potBendWeight;
+        this->xSkipping = xSkipping_;
+        this->straightenEdges = straightenEdges_;
+        this->bendWeight = bendWeight_;
+        this->potBendWeight = potBendWeight_;
     }
     /** 
      * Update position of bounding boxes.

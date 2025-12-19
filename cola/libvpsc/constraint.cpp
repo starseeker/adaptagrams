@@ -32,13 +32,13 @@
 #include "libvpsc/variable.h"
 
 namespace vpsc {
-Constraint::Constraint(Variable *left, Variable *right, double gap, bool equality)
-: left(left),
-  right(right),
-  gap(gap),
+Constraint::Constraint(Variable *left_, Variable *right_, double gap_, bool equality_)
+: left(left_),
+  right(right_),
+  gap(gap_),
   timeStamp(0),
   active(false),
-  equality(equality),
+  equality(equality_),
   unsatisfiable(false),
   needsScaling(true),
   creator(nullptr)

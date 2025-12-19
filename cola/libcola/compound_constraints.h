@@ -51,11 +51,11 @@ class RootCluster;
 class SubConstraint
 {
     public:
-        SubConstraint(vpsc::Dim dim, vpsc::Constraint constraint, 
-                double cost = 0)
-            : dim(dim),
-              constraint(constraint),
-              cost(cost)
+        SubConstraint(vpsc::Dim dim_, vpsc::Constraint constraint_, 
+                double cost_ = 0)
+            : dim(dim_),
+              constraint(constraint_),
+              cost(cost_)
         {
         }
         bool operator<(const SubConstraint& rhs) const

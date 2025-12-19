@@ -67,12 +67,12 @@ namespace vpsc {
 class CriticalFailure
 {
     public:
-        CriticalFailure(const char *expr, const char *file, int line, 
-                const char *function = nullptr)
-            : expr(expr),
-              file(file),
-              line(line),
-              function(function)
+        CriticalFailure(const char *expr_, const char *file_, int line_, 
+                const char *function_ = nullptr)
+            : expr(expr_),
+              file(file_),
+              line(line_),
+              function(function_)
         {
         }
         std::string what() const
