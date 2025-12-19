@@ -44,17 +44,17 @@ class Block;
 
 /// type for Initial position for Variable ctor
 struct Initial {
-    explicit Initial(double pos) : pos(pos) {}
+    explicit Initial(double pos_) : pos(pos_) {}
     double pos;
 };
 /// type for Desired position for Variable ctor
 struct Desired {
-    explicit Desired(double pos) : pos(pos) {}
+    explicit Desired(double pos_) : pos(pos_) {}
     double pos;
 };
 /// type for Weight of Variable ctor
 struct Weight {
-    explicit Weight(double w) : w(w) {}
+    explicit Weight(double w_) : w(w_) {}
     double w;
 };
 /**
@@ -62,8 +62,8 @@ struct Weight {
  */
 class Variable {
 public:
-    Variable(const unsigned id, const Initial& i) 
-        : id(id), x(i.pos), d(i.pos), w(1.0)
+    Variable(const unsigned id_, const Initial& i) 
+        : id(id_), x(i.pos), d(i.pos), w(1.0)
         , block(nullptr), b(0), in(), out() {}
     /**
      * Arguments are passed in with explicit types to ensure they're in
@@ -72,13 +72,13 @@ public:
      * @param d the desired value
      * @param w weight, default is 1.0
      */
-    Variable(const unsigned id, const Initial& i, const Desired& d,
-            const Weight& w=Weight(1.0)) 
-        : id(id), x(i.pos),d(d.pos),w(w.w),block(nullptr),b(0)
+    Variable(const unsigned id_, const Initial& i, const Desired& d_,
+            const Weight& w_=Weight(1.0)) 
+        : id(id_), x(i.pos),d(d_.pos),w(w_.w),block(nullptr),b(0)
         , in(),out() {}
-    Variable(const Initial& i, const Desired& d,
-            const Weight& w=Weight(1.0)) 
-        : id(idCtr++), x(i.pos),d(d.pos),w(w.w),block(nullptr),b(0)
+    Variable(const Initial& i, const Desired& d_,
+            const Weight& w_=Weight(1.0)) 
+        : id(idCtr++), x(i.pos),d(d_.pos),w(w_.w),block(nullptr),b(0)
         , in(),out() {}
     /** 
      * It may be necessary for the user to change the desired position after
@@ -323,11 +323,11 @@ private:
  * was infeasible input.
  */
 struct CriticalFailure {
-    CriticalFailure(const char *expr, 
-            const char *file, 
-            int line, 
-            const char *function)
-        : expr(expr), file(file), line(line), function(function)
+    CriticalFailure(const char *expr_, 
+            const char *file_, 
+            int line_, 
+            const char *function_)
+        : expr(expr_), file(file_), line(line_), function(function_)
     {}
     void print() {
         fprintf(stderr,"ERROR: Critical sanity check failed in libproject!\n"
