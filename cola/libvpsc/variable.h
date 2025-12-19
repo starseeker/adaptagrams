@@ -61,13 +61,13 @@ public:
 	Constraints in;
 	Constraints out;
 	char *toString();
-	inline Variable(const int id, const double desiredPos=-1.0, 
-			const double weight=1.0, const double scale=1.0)
-		: id(id)
+	inline Variable(const int id_, const double desiredPos=-1.0, 
+			const double weight_=1.0, const double scale_=1.0)
+		: id(id_)
 		, desiredPosition(desiredPos)
 		, finalPosition(desiredPos)
-		, weight(weight)
-		, scale(scale)
+		, weight(weight_)
+		, scale(scale_)
 		, offset(0)
 		, block(nullptr)
 		, visited(false)
