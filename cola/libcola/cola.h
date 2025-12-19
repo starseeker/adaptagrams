@@ -85,7 +85,7 @@ public:
      * @param[in] X   The node's fixed position in the x-dimension.
      * @param[in] Y   The node's fixed position in the y-dimension.
      */
-    Lock(unsigned id, double X, double Y) : id(id), x(X), y(Y) {
+    Lock(unsigned id_, double X, double Y) : id(id_), x(X), y(Y) {
     }
     unsigned getID() const {
         return id;
@@ -119,8 +119,8 @@ public:
      * @param[in] w   The width value for the node's new bounding box.
      * @param[in] h   The height value for the node's new bounding box.
      */
-    Resize(unsigned id, double x, double y, double w, double h)
-        : id(id), target(x,x+w,y,y+h) {}
+    Resize(unsigned id_, double x_, double y_, double w, double h)
+        : id(id_), target(x_,x_+w,y_,y_+h) {}
     unsigned getID() const {
         return id;
     }
@@ -177,14 +177,14 @@ public:
      *                     for their bounding rects to be resized to.
      */
     PreIteration(
-            Locks& locks=__locksNotUsed,
-            Resizes& resizes=__resizesNotUsed) 
-        : locks(locks)
-        , resizes(resizes) 
+            Locks& locks_=__locksNotUsed,
+            Resizes& resizes_=__resizesNotUsed) 
+        : locks(locks_)
+        , resizes(resizes_) 
         , changed(true) {}
-    PreIteration(Resizes& resizes) 
+    PreIteration(Resizes& resizes_) 
         : locks(__locksNotUsed)
-        , resizes(resizes)
+        , resizes(resizes_)
         , changed(true) {}
 
 // To prevent C++ objects from being destroyed in garbage collected languages
@@ -216,9 +216,9 @@ private:
 class TestConvergence {
 public:
     double old_stress;
-    TestConvergence(const double tol = 1e-4, const unsigned maxiterations = 100)
+    TestConvergence(const double tol = 1e-4, const unsigned maxiterations_ = 100)
         : tolerance(tol),
-          maxiterations(maxiterations)
+          maxiterations(maxiterations_)
     { reset(); }
     virtual ~TestConvergence() {}
 

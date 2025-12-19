@@ -75,7 +75,7 @@ struct Matrix2d {
     int rows, cols;
     std::vector<T> data;
     Matrix2d() : rows(0), cols(0) {}
-    Matrix2d(int rows, int cols) : rows(rows), cols(cols), data(rows*cols)
+    Matrix2d(int rows_, int cols_) : rows(rows_), cols(cols_), data(rows_*cols_)
     { }
 
     T operator()(int i, int j) const
