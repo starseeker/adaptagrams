@@ -41,20 +41,20 @@ class OverlapShapeOffsets : public SubConstraintInfo
 {
     public:
         OverlapShapeOffsets(unsigned ind, double xOffset, double yOffset,
-                unsigned int group)
+                unsigned int group_)
             : SubConstraintInfo(ind),
               cluster(nullptr),
               rectPadding(0),
-              group(group)
+              group(group_)
         {
             halfDim[0] = xOffset;
             halfDim[1] = yOffset;
         }
-        OverlapShapeOffsets(unsigned ind, Cluster *cluster, unsigned int group)
+        OverlapShapeOffsets(unsigned ind, Cluster *cluster_, unsigned int group_)
             : SubConstraintInfo(ind),
-              cluster(cluster),
-              rectPadding(cluster->margin()),
-              group(group)
+              cluster(cluster_),
+              rectPadding(cluster_->margin()),
+              group(group_)
         {
             halfDim[0] = 0;
             halfDim[1] = 0;
