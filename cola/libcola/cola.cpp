@@ -39,11 +39,11 @@ ConstrainedMajorizationLayout
 ::ConstrainedMajorizationLayout(
         vector<Rectangle*>& rs,
         const vector<Edge>& es,
-        RootCluster *clusterHierarchy,
+        RootCluster *clusterHierarchy_,
         const double idealLength,
         EdgeLengths eLengths,
         TestConvergence *doneTest,
-        PreIteration* preIteration,
+        PreIteration* preIteration_,
         bool useNeighbourStress)
     : n(rs.size()),
       lap2(valarray<double>(n*n)), 
@@ -51,13 +51,13 @@ ConstrainedMajorizationLayout
       tol(1e-7),
       done(doneTest),
       using_default_done(false),
-      preIteration(preIteration),
+      preIteration(preIteration_),
       X(valarray<double>(n)), Y(valarray<double>(n)),
       stickyNodes(false), 
       startX(valarray<double>(n)), startY(valarray<double>(n)),
       constrainedLayout(false),
       nonOverlappingClusters(false),
-      clusterHierarchy(clusterHierarchy),
+      clusterHierarchy(clusterHierarchy_),
       gpX(nullptr), gpY(nullptr),
       ccs(nullptr),
       unsatisfiableX(nullptr), unsatisfiableY(nullptr),
@@ -156,16 +156,16 @@ ConstrainedMajorizationLayout
 // back to their starting positions
 void ConstrainedMajorizationLayout::setStickyNodes(
         const double stickyWeight, 
-        valarray<double> const & startX,
-        valarray<double> const & startY) {
-    COLA_ASSERT( startX.size()==n && startY.size()==n);
+        valarray<double> const & startX_,
+        valarray<double> const & startY_) {
+    COLA_ASSERT( startX_.size()==n && startY_.size()==n);
     stickyNodes = true;
     // not really constrained but we want to use GP solver rather than 
     // ConjugateGradient
     constrainedLayout = true; 
     this->stickyWeight=stickyWeight;
-    this->startX = startX;
-    this->startY = startY;
+    this->startX = startX_;
+    this->startY = startY_;
     for(unsigned i = 0; i<n; i++) {
         lap2[i*n+i]-=stickyWeight;
     }
