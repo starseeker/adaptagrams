@@ -441,10 +441,10 @@ class VarIndexPair : public SubConstraintInfo
 
 
 SeparationConstraint::SeparationConstraint(const vpsc::Dim dim, 
-        unsigned l, unsigned r, double g, bool equality)
+        unsigned l, unsigned r, double g, bool equality_)
     : CompoundConstraint(dim),
       gap(g), 
-      equality(equality),
+      equality(equality_),
       vpscConstraint(nullptr)
 {
     _subConstraintInfo.push_back(new VarIndexPair(l, r));
@@ -453,10 +453,10 @@ SeparationConstraint::SeparationConstraint(const vpsc::Dim dim,
 
 SeparationConstraint::SeparationConstraint(const vpsc::Dim dim, 
         AlignmentConstraint *l, AlignmentConstraint *r, double g, 
-        bool equality) 
+        bool equality_) 
     : CompoundConstraint(dim),
       gap(g),
-      equality(equality)
+      equality(equality_)
 {
     COLA_ASSERT(l);
     COLA_ASSERT(r);
@@ -585,12 +585,12 @@ unsigned SeparationConstraint::right(void) const
 }
 
 
-void SeparationConstraint::setSeparation(double gap) 
+void SeparationConstraint::setSeparation(double gap_) 
 {
-    this->gap = gap;
+    this->gap = gap_;
     if (vpscConstraint != nullptr) 
     {
-        vpscConstraint->gap = gap;
+        vpscConstraint->gap = gap_;
     }
 }
 
@@ -748,11 +748,11 @@ class AlignmentPair : public SubConstraintInfo
 
 
 MultiSeparationConstraint::MultiSeparationConstraint(const vpsc::Dim dim, 
-        double minSep, bool equality)
+        double minSep, bool equality_)
     : CompoundConstraint(dim),
       indicator(nullptr),
       sep(minSep), 
-      equality(equality)
+      equality(equality_)
 { 
 }
 

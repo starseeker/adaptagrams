@@ -55,7 +55,7 @@ struct Event {
     // the position of the scan line at which the event is triggered
     double pos;
     vpsc::Dim scanDim;
-    Event(bool open, double pos) : open(open), pos(pos), scanDim(vpsc::UNSET) {}
+    Event(bool open_, double pos_) : open(open_), pos(pos_), scanDim(vpsc::UNSET) {}
     virtual ~Event() {};
     /*
      * process is called for each event in pos order as part of the scan
@@ -70,8 +70,8 @@ struct Event {
  */
 struct NodeEvent : Event {
     Node *node;
-    NodeEvent(bool open, double pos, Node *v)
-        : Event(open,pos), node(v)
+    NodeEvent(bool open_, double pos_, Node *v)
+        : Event(open_,pos_), node(v)
     {
     }
     ~NodeEvent(){}
@@ -90,8 +90,8 @@ struct NodeEvent : Event {
 struct NodeOpen : NodeEvent {
     /// position in openNodes
     OpenNodes::iterator openListIndex;
-    NodeOpen(vpsc::Dim dim, Node *node)
-        : NodeEvent(true,node->rect->getMinD(vpsc::conjugate(dim)),node)
+    NodeOpen(vpsc::Dim dim, Node *node_)
+        : NodeEvent(true,node_->rect->getMinD(vpsc::conjugate(dim)),node_)
     {
         scanDim = dim;
     }
@@ -140,10 +140,10 @@ struct NodeClose : NodeEvent {
      */
     NodeOpen* opening;
     vpsc::Constraints& cs;
-    NodeClose(vpsc::Dim dim, Node* node, NodeOpen* o, vpsc::Constraints& cs)
-        : NodeEvent(false,node->rect->getMaxD(vpsc::conjugate(dim)),node)
+    NodeClose(vpsc::Dim dim, Node* node_, NodeOpen* o, vpsc::Constraints& cs_)
+        : NodeEvent(false,node_->rect->getMaxD(vpsc::conjugate(dim)),node_)
         , opening(o)
-        , cs(cs)
+        , cs(cs_)
     {
         COLA_ASSERT(opening->node == node);
         scanDim = dim;
@@ -198,8 +198,8 @@ struct NodeClose : NodeEvent {
  */
 struct SegmentEvent : Event {
     Segment *s;
-    SegmentEvent(vpsc::Dim dim, bool open, EdgePoint* v, Segment *s)
-        : Event(open,v->pos(vpsc::conjugate(dim))), s(s) {}
+    SegmentEvent(vpsc::Dim dim, bool open_, EdgePoint* v, Segment *s_)
+        : Event(open_,v->pos(vpsc::conjugate(dim))), s(s_) {}
 };
 /*
  * at a segment open we add the segment to the list of open segments
@@ -207,8 +207,8 @@ struct SegmentEvent : Event {
 struct SegmentOpen : SegmentEvent {
     /// position in openSegments
     OpenSegments::iterator openListIndex;
-    SegmentOpen(vpsc::Dim dim, Segment *s)
-        : SegmentEvent(dim, true,s->getMin(dim),s)
+    SegmentOpen(vpsc::Dim dim, Segment *s_)
+        : SegmentEvent(dim, true,s_->getMin(dim),s_)
     {
         scanDim = dim;
     }
@@ -231,8 +231,8 @@ struct SegmentOpen : SegmentEvent {
 struct SegmentClose : SegmentEvent {
     /// opening corresponding to this closing
     SegmentOpen* opening;
-    SegmentClose(vpsc::Dim dim, Segment *s, SegmentOpen* so)
-        : SegmentEvent(dim, false,s->getMax(dim),s), opening(so)
+    SegmentClose(vpsc::Dim dim, Segment *s_, SegmentOpen* so)
+        : SegmentEvent(dim, false,s_->getMax(dim),s_), opening(so)
     {
         COLA_ASSERT(opening->s==s);
         scanDim = dim;
@@ -337,9 +337,9 @@ struct CompareEvents {
         return false;
     }
 };
-TriConstraint::TriConstraint(vpsc::Dim dim, const Node *u, const Node *v,
-        const Node *w, double p, double g, bool left)
-    : u(u), v(v), w(w), p(p), g(g), leftOf(left), scanDim(dim)
+TriConstraint::TriConstraint(vpsc::Dim dim, const Node *u_, const Node *v_,
+        const Node *w_, double p_, double g_, bool left)
+    : u(u_), v(v_), w(w_), p(p_), g(g_), leftOf(left), scanDim(dim)
 {
     COLA_ASSERT(assertFeasible());
 }
@@ -415,12 +415,12 @@ void Segment::transferStraightConstraint(StraightConstraint* s) {
  * which to create the constraint
  */
 StraightConstraint::StraightConstraint(Segment* s, vpsc::Dim dim,
-        Node* node,
-        const EdgePoint::RectIntersect ri,
+        Node* node_,
+        const EdgePoint::RectIntersect ri_,
         const double scanPos,
         const double segmentPos,
         const bool nodeLeft) 
-    : TopologyConstraint(dim), segment(s), node(node), ri(ri), pos(scanPos)
+    : TopologyConstraint(dim), segment(s), node(node_), ri(ri_), pos(scanPos)
 {
     FILE_LOG(logDEBUG)<<"StraightConstraint ctor: pos="<<pos<<" edge id="<<s->edge->id<<" node id="<<node->id;
     EdgePoint *u=s->start, *v=s->end;
@@ -502,8 +502,8 @@ struct CreateBendConstraints
 };
 struct CreateSegmentEvents
 {
-    CreateSegmentEvents(vector<Event*>& events, vpsc::Dim dim)
-        : events(events),
+    CreateSegmentEvents(vector<Event*>& events_, vpsc::Dim dim)
+        : events(events_),
           scanDim(dim)
     { }
     void operator() (Segment* s)
@@ -569,8 +569,8 @@ inline bool validTurn(EdgePoint* u, EdgePoint* v, EdgePoint* w) {
     return false;
 }
 struct PruneDegenerate {
-    PruneDegenerate(vpsc::Dim dim, list<EdgePoint*>& pruneList)
-        : pruneList(pruneList),
+    PruneDegenerate(vpsc::Dim dim, list<EdgePoint*>& pruneList_)
+        : pruneList(pruneList_),
           scanDim(dim)
     {
     }
@@ -633,12 +633,12 @@ static void recCreateTopologyClusterNodes(cola::Cluster *cluster,
     }
 }
 
-TopologyConstraints::TopologyConstraints(const vpsc::Dim axisDim, Nodes& nodes,
-        Edges& edges, cola::RootCluster* clusterHierarchy, vpsc::Variables& vs,
+TopologyConstraints::TopologyConstraints(const vpsc::Dim axisDim, Nodes& nodes_,
+        Edges& edges_, cola::RootCluster* clusterHierarchy, vpsc::Variables& vs,
         vpsc::Constraints& cs)
-    : n(nodes.size()),
-      nodes(nodes),
-      edges(edges),
+    : n(nodes_.size()),
+      nodes(nodes_),
+      edges(edges_),
       clusters(clusterHierarchy),
       vs(vs),
       cs(cs),
