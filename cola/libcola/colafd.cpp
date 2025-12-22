@@ -97,13 +97,13 @@ void dumpSquareMatrix(unsigned n, T** L) {
 ConstrainedFDLayout::ConstrainedFDLayout(const vpsc::Rectangles& rs,
         const std::vector< Edge >& es, const double idealLength,
         const EdgeLengths& eLengths,
-        TestConvergence *doneTest, PreIteration* preIteration)
+        TestConvergence *doneTest, PreIteration* preIteration_)
     : n(rs.size()),
       X(valarray<double>(n)),
       Y(valarray<double>(n)),
       done(doneTest),
       using_default_done(false),
-      preIteration(preIteration),
+      preIteration(preIteration_),
       topologyAddon(new TopologyAddonInterface()),
       rungekutta(true),
       desiredPositions(nullptr),

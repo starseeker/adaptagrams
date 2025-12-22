@@ -118,8 +118,8 @@ struct Node {
     double pos;
     Node *firstAbove, *firstBelow;
     NodeSet *leftNeighbours, *rightNeighbours;
-    Node(Variable *v, Rectangle *r, double p) 
-        : v(v),r(r),pos(p),
+    Node(Variable *v_, Rectangle *r_, double p) 
+        : v(v_),r(r_),pos(p),
           firstAbove(nullptr), firstBelow(nullptr),
           leftNeighbours(nullptr), rightNeighbours(nullptr)
      
