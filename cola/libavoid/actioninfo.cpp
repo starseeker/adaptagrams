@@ -118,7 +118,7 @@ JunctionRef *ActionInfo::junction(void) const
 }
 
 
-void ActionInfo::addConnEndUpdate(const unsigned int type, 
+void ActionInfo::addConnEndUpdate(const unsigned int updateType, 
         const ConnEnd& connEnd, bool isConnPinMoveUpdate)
 {
     bool alreadyExists = false;
@@ -126,7 +126,7 @@ void ActionInfo::addConnEndUpdate(const unsigned int type,
             conn != conns.end(); ++conn)
     {
         // Look for an existing queued change to the same end.
-        if (conn->first == type)
+        if (conn->first == updateType)
         {
             // Found a queued change to the same endpoint of the
             // connector. If this is a pin change as a result of a
@@ -147,7 +147,7 @@ void ActionInfo::addConnEndUpdate(const unsigned int type,
     if (!alreadyExists)
     {
         // Matching change not found, so add this one.
-        conns.push_back(std::make_pair(type, connEnd));
+        conns.push_back(std::make_pair(updateType, connEnd));
     }
 }
 
