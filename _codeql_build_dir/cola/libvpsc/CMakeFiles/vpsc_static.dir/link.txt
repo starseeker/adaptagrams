@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../libvpsc.a CMakeFiles/vpsc_obj.dir/block.cpp.o CMakeFiles/vpsc_obj.dir/blocks.cpp.o CMakeFiles/vpsc_obj.dir/cbuffer.cpp.o CMakeFiles/vpsc_obj.dir/constraint.cpp.o CMakeFiles/vpsc_obj.dir/rectangle.cpp.o CMakeFiles/vpsc_obj.dir/solve_VPSC.cpp.o CMakeFiles/vpsc_obj.dir/variable.cpp.o
+/usr/bin/ranlib ../../libvpsc.a

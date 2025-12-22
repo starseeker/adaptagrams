@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../libtopology.a CMakeFiles/topology_obj.dir/cola_topology_addon.cpp.o CMakeFiles/topology_obj.dir/compute_forces.cpp.o CMakeFiles/topology_obj.dir/orthogonal_topology.cpp.o CMakeFiles/topology_obj.dir/resize.cpp.o CMakeFiles/topology_obj.dir/topology_constraints_constructor.cpp.o CMakeFiles/topology_obj.dir/topology_constraints.cpp.o CMakeFiles/topology_obj.dir/topology_graph.cpp.o
+/usr/bin/ranlib ../../libtopology.a
