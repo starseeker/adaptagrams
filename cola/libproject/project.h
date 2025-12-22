@@ -110,8 +110,8 @@ public:
      *  to the relative desired position
      */
     void moveBy(double alpha) { 
-        double i=relativeInitialPos(), d=relativeDesiredPos();
-        x = i + alpha*(d-i);
+        double i=relativeInitialPos(), desiredPos=relativeDesiredPos();
+        x = i + alpha*(desiredPos-i);
     }
     void clearConstraints() {
         in.clear();
