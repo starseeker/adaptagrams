@@ -142,12 +142,12 @@ struct Node {
         leftNeighbours=left;
         rightNeighbours=right;
         for(NodeSet::iterator i=left->begin();i!=left->end();++i) {
-            Node *v=*(i);
-            v->addRightNeighbour(this);
+            Node *node=*(i);
+            node->addRightNeighbour(this);
         }
         for(NodeSet::iterator i=right->begin();i!=right->end();++i) {
-            Node *v=*(i);
-            v->addLeftNeighbour(this);
+            Node *node=*(i);
+            node->addLeftNeighbour(this);
         }
     }
 };
@@ -199,7 +199,7 @@ struct Event {
     EventType type;
     Node *v;
     double pos;
-    Event(EventType t, Node *v, double p) : type(t),v(v),pos(p) {};
+    Event(EventType t, Node *v_, double p) : type(t),v(v_),pos(p) {};
 };
 int compare_events(const void *a, const void *b) {
     Event *ea=*(Event**)a;
@@ -272,10 +272,10 @@ void generateXConstraints(const Rectangles& rs, const Variables& vars,
         } else {
             // Close event
             if(useNeighbourLists) {
-                for(NodeSet::iterator i=v->leftNeighbours->begin();
-                    i!=v->leftNeighbours->end();i++
+                for(NodeSet::iterator it=v->leftNeighbours->begin();
+                    it!=v->leftNeighbours->end();it++
                 ) {
-                    Node *u=*i;
+                    Node *u=*it;
                     double sep = (v->r->width()+u->r->width())/2.0;
                     cs.push_back(new Constraint(u->v,v->v,sep));
                     const size_t erased = u->rightNeighbours->erase(v);
@@ -283,10 +283,10 @@ void generateXConstraints(const Rectangles& rs, const Variables& vars,
                     COLA_UNUSED(erased);
                 }
 
-                for(NodeSet::iterator i=v->rightNeighbours->begin();
-                    i!=v->rightNeighbours->end();i++
+                for(NodeSet::iterator it=v->rightNeighbours->begin();
+                    it!=v->rightNeighbours->end();it++
                 ) {
-                    Node *u=*i;
+                    Node *u=*it;
                     double sep = (v->r->width()+u->r->width())/2.0;
                     cs.push_back(new Constraint(v->v,u->v,sep));
                     const size_t erased = u->leftNeighbours->erase(v);
