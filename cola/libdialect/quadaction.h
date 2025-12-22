@@ -103,7 +103,7 @@ struct Assignment {
     //! @param[in]  cost  the cost of this assignment, which measures the sum
     //!                   of angular displacements of Nbrs from their original
     //!                   positions
-    Assignment(const Nbrs &semis, double cost) : semis(semis), cost(cost) {}
+    Assignment(const Nbrs &semis_, double cost_) : semis(semis_), cost(cost_) {}
 
     //! @brief  Default constructor.
     //!

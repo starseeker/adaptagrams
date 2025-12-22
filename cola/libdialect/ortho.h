@@ -228,11 +228,11 @@ struct Compass {
 typedef std::pair<double, double> interval;
 
 struct LineSegment {
-    LineSegment(Avoid::Point p0, Avoid::Point p1)
-        : p0(p0), p1(p1),
-          x0(p0.x), y0(p0.y),
-          x1(p1.x), y1(p1.y),
-          direc(Compass::cardinalDirection(p0, p1)),
+    LineSegment(Avoid::Point p0_, Avoid::Point p1_)
+        : p0(p0_), p1(p1_),
+          x0(p0_.x), y0(p0_.y),
+          x1(p1_.x), y1(p1_.y),
+          direc(Compass::cardinalDirection(p0_, p1_)),
           varDim(Compass::varDim.at(direc)),
           constDim(Compass::constDim.at(direc))
     {

@@ -942,14 +942,14 @@ static void processLayoutConstraintEvent(LayoutScanlineNodeSet& scanline,
 class EndpointAnchorInMoveDir
 {
     public:
-        EndpointAnchorInMoveDir(size_t dimension, ConnRef *connRef,
-                size_t endptIndex, size_t obstacleIndex,
-                double obstacleOffset)
-            : dimension(dimension),
-              connRef(connRef),
-              endptIndex(endptIndex),
-              obstacleIndex(obstacleIndex),
-              obstacleOffset(obstacleOffset)
+        EndpointAnchorInMoveDir(size_t dimension_, ConnRef *connRef_,
+                size_t endptIndex_, size_t obstacleIndex_,
+                double obstacleOffset_)
+            : dimension(dimension_),
+              connRef(connRef_),
+              endptIndex(endptIndex_),
+              obstacleIndex(obstacleIndex_),
+              obstacleOffset(obstacleOffset_)
         {
         }
 

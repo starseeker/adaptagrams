@@ -45,30 +45,30 @@ using namespace std;
 using namespace vpsc;
 namespace cola {
 GradientProjection::GradientProjection(
-    const Dim k,
-    std::valarray<double> *denseQ,
+    const Dim k_,
+    std::valarray<double> *denseQ_,
     const double tol,
     const unsigned max_iterations,
-    CompoundConstraints const *ccs,
-    UnsatisfiableConstraintInfos *unsatisfiableConstraints,
-    NonOverlapConstraintsMode nonOverlapConstraints,
+    CompoundConstraints const *ccs_,
+    UnsatisfiableConstraintInfos *unsatisfiableConstraints_,
+    NonOverlapConstraintsMode nonOverlapConstraints_,
     RootCluster* clusterHierarchy,
-    vpsc::Rectangles* rs,
-    const bool scaling,
-    SolveWithMosek solveWithMosek) 
-        : k(k), 
-          denseSize(static_cast<unsigned>((floor(sqrt(static_cast<double>(denseQ->size())))))),
-          denseQ(denseQ), 
-          rs(rs),
-          ccs(ccs),
-          unsatisfiableConstraints(unsatisfiableConstraints),
-          nonOverlapConstraints(nonOverlapConstraints),
+    vpsc::Rectangles* rs_,
+    const bool scaling_,
+    SolveWithMosek solveWithMosek_) 
+        : k(k_), 
+          denseSize(static_cast<unsigned>((floor(sqrt(static_cast<double>(denseQ_->size())))))),
+          denseQ(denseQ_), 
+          rs(rs_),
+          ccs(ccs_),
+          unsatisfiableConstraints(unsatisfiableConstraints_),
+          nonOverlapConstraints(nonOverlapConstraints_),
           clusterHierarchy(clusterHierarchy),
           tolerance(tol), 
           max_iterations(max_iterations),
           sparseQ(nullptr),
-          solveWithMosek(solveWithMosek),
-          scaling(scaling)
+          solveWithMosek(solveWithMosek_),
+          scaling(scaling_)
 {
     //printf("GP Instance: scaling=%d, mosek=%d\n",scaling,solveWithMosek);
     for(unsigned i=0;i<denseSize;i++) {
@@ -200,13 +200,13 @@ double GradientProjection::computeStepSize(
     return numerator/(2.*denominator);
 }
 
-bool GradientProjection::runSolver(valarray<double> & result) {
+bool GradientProjection::runSolver(valarray<double> & result_) {
     bool activeConstraints = false;
     switch(solveWithMosek) {
         case Off:
             activeConstraints = solver->satisfy();
             for (unsigned i=0;i<vars.size();i++) {
-                result[i]=vars[i]->finalPosition;
+                result_[i]=vars[i]->finalPosition;
             }
             break;
         case Inner:
@@ -463,7 +463,7 @@ void GradientProjection::destroyVPSC(IncSolver *vpsc) {
 }
 void GradientProjection::straighten(
     cola::SparseMatrix const * Q, 
-    vector<SeparationConstraint*> const & cs,
+    vector<SeparationConstraint*> const & cs_,
     vector<straightener::Node*> const & snodes) 
 {
     COLA_ASSERT(Q->rowSize()==snodes.size());
@@ -475,7 +475,7 @@ void GradientProjection::straighten(
         vars.push_back(v);
     }
     COLA_ASSERT(lcs.size()==0);
-    for(vector<SeparationConstraint*>::const_iterator i=cs.begin();i!=cs.end();i++) {
+    for(vector<SeparationConstraint*>::const_iterator i=cs_.begin();i!=cs_.end();i++) {
         (*i)->generateSeparationConstraints(k, vars, lcs, *rs); 
     }
 }

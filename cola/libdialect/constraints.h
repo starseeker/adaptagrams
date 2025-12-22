@@ -174,7 +174,7 @@ struct SepPair {
 //! Since each SepPair may represent up to two VPSC constraints (one in each dimension), we need a simple wrapper
 //! struct to represent each dimension.
 struct SepPairSubConstraintInfo : public cola::SubConstraintInfo {
-    SepPairSubConstraintInfo(SepPair_SP sp, vpsc::Dim dim) : cola::SubConstraintInfo(0), sp(sp), dim(dim) {}
+    SepPairSubConstraintInfo(SepPair_SP sp_, vpsc::Dim dim_) : cola::SubConstraintInfo(0), sp(sp_), dim(dim_) {}
     SepPair_SP sp = nullptr;
     vpsc::Dim dim;
 };
@@ -427,8 +427,8 @@ struct SepCo {
     //! @param[in] right  The righthand Node (i.e. the one with larger coordinate)
     //! @param[in] gap  The desired gap between the centres of the Nodes
     //! @param[in] exact  Says whether the gap is exact or a minimum.
-    SepCo(vpsc::Dim dim, Node_SP left, Node_SP right, double gap, bool exact=false)
-        : dim(dim), left(left), right(right), gap(gap), exact(exact) {}
+    SepCo(vpsc::Dim dim_, Node_SP left_, Node_SP right_, double gap_, bool exact_=false)
+        : dim(dim_), left(left_), right(right_), gap(gap_), exact(exact_) {}
 
     //! @brief  Allocate cola::CompoundConstraints to represent this SepCo.
     //! @param[in] cgr  A ColaGraphRep so that Node Id's can be mapped to Rectangle indices.

@@ -47,8 +47,8 @@ void setNodeVariables(Nodes& ns, std::vector<vpsc::Variable*>& vs) {
 
 static const double POSITION_LIMIT = 1000000;
 
-Node::Node(unsigned id, vpsc::Rectangle* r, vpsc::Variable* v)
-    : id(id), rect(r), var(v)
+Node::Node(unsigned id_, vpsc::Rectangle* r, vpsc::Variable* v)
+    : id(id_), rect(r), var(v)
 { 
     COLA_ASSERT(initialPos(vpsc::XDIM) >- POSITION_LIMIT);
     COLA_ASSERT(initialPos(vpsc::XDIM) < POSITION_LIMIT);
@@ -368,7 +368,7 @@ straightener::Route* Edge::getRoute() const {
     return r;
 }
 struct accumulateLength {
-    accumulateLength(double& a) : a(a) {}
+    accumulateLength(double& a_) : a(a_) {}
     void operator()(const Segment* s) {
         a+=s->length();
     }
@@ -384,14 +384,14 @@ bool Edge::assertConvexBends() const {
     return true;
 }
 struct PointToString {
-    PointToString(stringstream& ss) : ss(ss) {}
+    PointToString(stringstream& ss_) : ss(ss_) {}
     void operator()(const EdgePoint* p) {
         ss << *p->node->rect << "," <<endl;
     }
     stringstream& ss;
 };
 struct SegmentToString {
-    SegmentToString(stringstream& ss) : ss(ss) {}
+    SegmentToString(stringstream& ss_) : ss(ss_) {}
     void operator()(const Segment* s) {
         ss << s->toString() <<",";
     }
@@ -411,7 +411,7 @@ string Edge::toString() const {
     return ss.str();
 }
 struct buildPath {
-    buildPath(ConstEdgePoints& vs) : vs(vs) {}
+    buildPath(ConstEdgePoints& vs_) : vs(vs_) {}
     void operator()(const EdgePoint* p) {
         vs.push_back(p);
     }
@@ -431,7 +431,7 @@ bool assertConvexBends(const Edges& es) {
 }
 #ifndef NDEBUG
 struct NoIntersection {
-    NoIntersection(const Nodes& vs) : vs(vs) {}
+    NoIntersection(const Nodes& vs_) : vs(vs_) {}
     void operator()(const Segment* s) {
         for(Nodes::const_iterator v=vs.begin();v!=vs.end();++v) {
             if(s->start->node->id==(*v)->id || s->end->node->id==(*v)->id) {

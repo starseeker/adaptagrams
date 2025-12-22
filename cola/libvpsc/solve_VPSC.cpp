@@ -46,19 +46,19 @@ namespace vpsc {
 static const double ZERO_UPPERBOUND=-1e-10;
 static const double LAGRANGIAN_TOLERANCE=-1e-4;
 
-IncSolver::IncSolver(Variables const &vs, Constraints const &cs) 
-    : Solver(vs,cs)
+IncSolver::IncSolver(Variables const &vs_, Constraints const &cs_) 
+    : Solver(vs_,cs_)
 {
-    inactive=cs;
+    inactive=cs_;
     for(Constraints::iterator i=inactive.begin();i!=inactive.end();++i) {
         (*i)->active=false;
     }
 }
-Solver::Solver(Variables const &vs, Constraints const &cs) 
-    : m(cs.size()), 
-      cs(cs),
-      n(vs.size()),
-      vs(vs),
+Solver::Solver(Variables const &vs_, Constraints const &cs_) 
+    : m(cs_.size()), 
+      cs(cs_),
+      n(vs_.size()),
+      vs(vs_),
       needsScaling(false)
 {
     for(unsigned i=0;i<n;++i) {

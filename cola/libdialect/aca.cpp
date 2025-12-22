@@ -1939,15 +1939,15 @@ void ACALayout::outputInstanceToSVG(std::string instanceName)
             "inkscape:label=\"Rects\">\n");
     for (size_t i = 0; i < m_rs.size(); ++i)
     {
-        double minX = m_rs[i]->getMinX();
-        double maxX = m_rs[i]->getMaxX();
-        double minY = m_rs[i]->getMinY();
-        double maxY = m_rs[i]->getMaxY();
+        double rectMinX = m_rs[i]->getMinX();
+        double rectMaxX = m_rs[i]->getMaxX();
+        double rectMinY = m_rs[i]->getMinY();
+        double rectMaxY = m_rs[i]->getMaxY();
     
         fprintf(fp, "<rect id=\"rect-%u\" x=\"%g\" y=\"%g\" width=\"%g\" "
                 "height=\"%g\" style=\"stroke-width: 1px; stroke: black; "
                 "fill: %s; fill-opacity: 0.3;\" />\n",
-                (unsigned) i, minX, minY, maxX - minX, maxY - minY,
+                (unsigned) i, rectMinX, rectMinY, rectMaxX - rectMinX, rectMaxY - rectMinY,
                 m_ignoreNodeForOPWithOffsets[i] ? "red" : "blue");
     }
     fprintf(fp, "</g>\n");

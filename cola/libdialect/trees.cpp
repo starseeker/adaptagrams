@@ -864,8 +864,8 @@ void Tree::addBufferNodesAndConstraints(Graph &G, NodesById &bufferNodes) {
     std::function<bool(Node_SP, Node_SP)> transCoordCmp = isVertical ?
                 [](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().x < b->getCentre().x; } :
                 [](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().y < b->getCentre().y; } ;
-    for (auto it = std::next(m_nodesByRank.begin()); it != m_nodesByRank.end(); ++it) {
-        Nodes rank = *it;
+    for (auto rankIt = std::next(m_nodesByRank.begin()); rankIt != m_nodesByRank.end(); ++rankIt) {
+        Nodes rank = *rankIt;
         std::sort(rank.begin(), rank.end(), transCoordCmp);
         Node_SP first = rank.front(),
                 last  = rank.back();

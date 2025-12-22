@@ -210,15 +210,15 @@ namespace topology {
          * @param start the EdgePoint at the start of the segment
          * @param end the EdgePoint at the end of the segment
          */
-        Segment(Edge* edge, EdgePoint* start, EdgePoint* end) 
-            : edge(edge), start(start), end(end)
+        Segment(Edge* edge_, EdgePoint* start_, EdgePoint* end_) 
+            : edge(edge_), start(start_), end(end_)
         {
             // no self loops!
-            COLA_ASSERT(start!=end);
+            COLA_ASSERT(start_!=end_);
             // the ends of the segment should not involve the same rectangle vertex
-            COLA_ASSERT(!start->uniqueCheck(end));
-            start->outSegment=this;
-            end->inSegment=this;
+            COLA_ASSERT(!start_->uniqueCheck(end_));
+            start_->outSegment=this;
+            end_->inSegment=this;
         }
         /*
          * add a new StraightConstraint to this segment (if necessary)
@@ -411,9 +411,9 @@ namespace topology {
         /**
          * Construct an edge from a list of EdgePoint in sequence
          */
-        Edge(unsigned id, double idealLength, EdgePoints &vs) 
-            : id(id)
-            , idealLength(idealLength)
+        Edge(unsigned id_, double idealLength_, EdgePoints &vs) 
+            : id(id_)
+            , idealLength(idealLength_)
             , firstSegment(nullptr), lastSegment(nullptr)
             , nSegments(0)
         {
