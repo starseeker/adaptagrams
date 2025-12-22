@@ -38,8 +38,8 @@ using std::sort;
 
 using namespace dialect;
 
-Nbr::Nbr(id_type id, double dx, double dy) :
-    id(id), x(dx), y(dy) {
+Nbr::Nbr(id_type id_, double dx, double dy) :
+    id(id_), x(dx), y(dy) {
     // At least one of dx and dy must be nonzero, since otherwise
     // this Nbr would sit right atop the centre node, which is not
     // allowed.
@@ -107,7 +107,7 @@ string Assignment::toString() const {
     return s;
 }
 
-Quad::Quad(unsigned int num) : num(num) {
+Quad::Quad(unsigned int num_) : num(num_) {
     // The only valid num's for quadrants are 0, 1, 2, 3.
     COLA_ASSERT(num <= 3);
 }
@@ -149,8 +149,8 @@ Assignment Quad::constructAssignmentForAction(char action) const {
     return Assignment(semis, cost);
 }
 
-Arrangement::Arrangement(Nbrs nbrs) :
-    nbrs(nbrs),
+Arrangement::Arrangement(Nbrs nbrs_) :
+    nbrs(nbrs_),
     semis({nullptr, nullptr, nullptr, nullptr}),
     quads({make_shared<Quad>(0), make_shared<Quad>(1), make_shared<Quad>(2), make_shared<Quad>(3)})
 {
@@ -277,8 +277,8 @@ Assignments Arrangement::computeNAssignments(unsigned N) const {
     }
     // Sort the assignments by cost.
     sort(asgns.begin(), asgns.end(),
-        [](const Assignment_SP &a, const Assignment_SP &b) -> bool {
-            return a->cost < b->cost;
+        [](const Assignment_SP &asgnA, const Assignment_SP &asgnB) -> bool {
+            return asgnA->cost < asgnB->cost;
         }
     );
     return asgns;

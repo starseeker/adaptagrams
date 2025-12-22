@@ -111,11 +111,11 @@ Event::Event(EdgeSegment *seg_, Node_SP endpt_, EventType type_)
     varCoord = seg->orientation == vpsc::HORIZONTAL ? c.x : c.y;
 }
 
-Event::Event(double varCoord, Node_SP node, EventType type)
+Event::Event(double varCoord_, Node_SP node, EventType type_)
     : seg(nullptr),
       endpt(node),
-      varCoord(varCoord),
-      type(type),
+      varCoord(varCoord_),
+      type(type_),
       companion(nullptr) {}
 
 double Event::x(void) {
