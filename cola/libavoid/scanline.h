@@ -116,7 +116,7 @@ typedef enum {
 
 struct Event
 {
-    Event(EventType t, Node *v, double p);
+    Event(EventType t, Node *v_, double p);
     
     EventType type;
     Node *v;

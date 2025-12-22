@@ -52,11 +52,11 @@ namespace vpsc {
                     // need to search the buffer for the new least
                     // violated constraint
                     buffMaxSlack=-DBL_MAX;
-                    for(unsigned i=0;i<size;i++) {
-                        c=buffer[i];
+                    for(unsigned j=0;j<size;j++) {
+                        c=buffer[j];
                         if(!c->equality&&buffMaxSlack < c->slack()) {
                             buffMaxSlack = slack;
-                            buffMaxSlackPos = i;
+                            buffMaxSlackPos = j;
                         }
                     }
                 }

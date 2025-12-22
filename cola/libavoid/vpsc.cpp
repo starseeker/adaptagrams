@@ -718,7 +718,7 @@ void Block::addVariable(Variable* v) {
 #endif
 */
 }
-Block::Block(Blocks *blocks, Variable* const v)
+Block::Block(Blocks *blocks_, Variable* const v)
     : vars(new vector<Variable*>)
     , posn(0)
     //, weight(0)
@@ -727,7 +727,7 @@ Block::Block(Blocks *blocks, Variable* const v)
     , timeStamp(0)
     , in(nullptr)
     , out(nullptr)
-    , blocks(blocks)
+    , blocks(blocks_)
 {
     if(v!=nullptr) {
         v->offset=0;
@@ -761,17 +761,17 @@ void Block::setUpInConstraints() {
 void Block::setUpOutConstraints() {
     setUpConstraintHeap(out,false);
 }
-void Block::setUpConstraintHeap(Heap* &h,bool in) {
+void Block::setUpConstraintHeap(Heap* &h,bool isIncoming) {
     delete h;
     h = new Heap();
     for (Vit i=vars->begin();i!=vars->end();++i) {
         Variable *v=*i;
-        vector<Constraint*> *cs=in?&(v->in):&(v->out);
+        vector<Constraint*> *cs=isIncoming?&(v->in):&(v->out);
         for (Cit j=cs->begin();j!=cs->end();++j) {
             Constraint *c=*j;
             c->timeStamp=blocks->blockTimeCtr;
-            if ( ((c->left->block != this) && in) || 
-                 ((c->right->block != this) && !in) )
+            if ( ((c->left->block != this) && isIncoming) || 
+                 ((c->right->block != this) && !isIncoming) )
             {
                 h->push(c);
             }
@@ -1290,13 +1290,13 @@ ostream& operator <<(ostream &os, const Block& b)
     return os;
 }
 
-Constraint::Constraint(Variable *left, Variable *right, double gap, bool equality)
-: left(left),
-  right(right),
-  gap(gap),
+Constraint::Constraint(Variable *left_, Variable *right_, double gap_, bool equality_)
+: left(left_),
+  right(right_),
+  gap(gap_),
   timeStamp(0),
   active(false),
-  equality(equality),
+  equality(equality_),
   unsatisfiable(false),
   needsScaling(true),
   creator(nullptr)

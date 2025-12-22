@@ -487,8 +487,8 @@ namespace straightener {
                 // for each dummy node w in L:
                 //   if w left of v create constraints l<w, w<v    
                 //   if w right of v create constraints v<w, w<r
-                for(vector<Node*>::iterator i=L.begin();i!=L.end();i++) {
-                    Node* w=*i;
+                for(vector<Node*>::iterator it=L.begin();it!=L.end();it++) {
+                    Node* w=*it;
                     if(w->dummy) {
                         // node is on an edge
                         Edge *edge=w->edge;
@@ -533,10 +533,10 @@ namespace straightener {
 #ifdef STRAIGHTENER_DEBUG
                     printf("EdgeClose@%f,eid=%d,(u,v)=(%d,%d)\n", e->pos,e->e->id,e->e->startNode,e->e->endNode);
 #endif                    
-                    unsigned i=e->e->openInd;
+                    unsigned idx=e->e->openInd;
                     COLA_ASSERT(openEdges.size()>0);
-                    openEdges[i]=openEdges[openEdges.size()-1];
-                    openEdges[i]->openInd=i;
+                    openEdges[idx]=openEdges[openEdges.size()-1];
+                    openEdges[idx]->openInd=idx;
                     openEdges.resize(openEdges.size()-1);
                 }
             }
@@ -619,18 +619,18 @@ namespace straightener {
             const double strength_,
             const vpsc::Dim dim_,
             std::vector<vpsc::Rectangle*> const & rs_,
-            cola::FixedList const & fixed,
+            cola::FixedList const & fixed_,
             std::vector<Edge*> const & edges_, 
-            vpsc::Variables const & vs,
+            vpsc::Variables const & vs_,
             vpsc::Variables & lvs_,
             vpsc::Constraints & lcs_,
             std::valarray<double> &oldCoords_,
             std::valarray<double> &oldG_) 
         : strength(strength_),
           dim(dim_),
-          fixed(fixed),
+          fixed(fixed_),
           edges(edges_), 
-          vs(vs), 
+          vs(vs_), 
           lvs(lvs_) 
     {
         unsigned n=rs_.size();

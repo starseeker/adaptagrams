@@ -171,12 +171,12 @@ void vertexVisibility(VertInf *point, VertInf *partner, bool knownNew,
 class PointPair
 {
     public:
-        PointPair(const Point& centerPoint, VertInf *inf)
+        PointPair(const Point& centerPoint_, VertInf *inf)
             : vInf(inf),
-              centerPoint(centerPoint)
+              centerPoint(centerPoint_)
         {
-            angle = rotationalAngle(vInf->point - centerPoint);
-            distance = euclideanDist(centerPoint, vInf->point);
+            angle = rotationalAngle(vInf->point - centerPoint_);
+            distance = euclideanDist(centerPoint_, vInf->point);
         }
         bool operator<(const PointPair& rhs) const
         {

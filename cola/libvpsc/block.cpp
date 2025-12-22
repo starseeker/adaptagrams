@@ -77,7 +77,7 @@ void Block::addVariable(Variable* v) {
 #endif
 */
 }
-Block::Block(Blocks *blocks, Variable* const v)
+Block::Block(Blocks *blocks_, Variable* const v)
     : vars(new std::vector<Variable*>)
     , posn(0)
     //, weight(0)
@@ -86,7 +86,7 @@ Block::Block(Blocks *blocks, Variable* const v)
     , timeStamp(0)
     , in(nullptr)
     , out(nullptr)
-    , blocks(blocks)
+    , blocks(blocks_)
 {
     if(v!=nullptr) {
         v->offset=0;
@@ -120,17 +120,17 @@ void Block::setUpInConstraints() {
 void Block::setUpOutConstraints() {
     setUpConstraintHeap(out,false);
 }
-void Block::setUpConstraintHeap(PairingHeap<Constraint*,CompareConstraints>* &h,bool in) {
+void Block::setUpConstraintHeap(PairingHeap<Constraint*,CompareConstraints>* &h,bool isIncoming) {
     delete h;
     h = new PairingHeap<Constraint*,CompareConstraints>();
     for (Vit i=vars->begin();i!=vars->end();++i) {
         Variable *v=*i;
-        std::vector<Constraint*> *cs=in?&(v->in):&(v->out);
+        std::vector<Constraint*> *cs=isIncoming?&(v->in):&(v->out);
         for (Cit j=cs->begin();j!=cs->end();++j) {
             Constraint *c=*j;
             c->timeStamp=blocks->blockTimeCtr;
-            if ( ((c->left->block != this) && in) || 
-                 ((c->right->block != this) && !in) )
+            if ( ((c->left->block != this) && isIncoming) || 
+                 ((c->right->block != this) && !isIncoming) )
             {
                 h->insert(c);
             }

@@ -367,10 +367,10 @@ void IncSolver::splitBlocks() {
             f<<"    found split point: "<<*v<<" lm="<<v->lm<<endl;
 #endif
             splitCnt++;
-            Block *b = v->left->block, *l=nullptr, *r=nullptr;
+            Block *splitBlock = v->left->block, *l=nullptr, *r=nullptr;
             COLA_ASSERT(v->left->block == v->right->block);
             //double pos = b->posn;
-            b->split(l,r,v);
+            splitBlock->split(l,r,v);
             //l->posn=r->posn=pos;
             //l->wposn = l->posn * l->weight;
             //r->wposn = r->posn * r->weight;
@@ -453,23 +453,23 @@ struct node {
     set<node*> out;
 };
 // useful in debugging - cycles would be BAD
-bool Solver::constraintGraphIsCyclic(const unsigned n, Variable* const vs[]) {
+bool Solver::constraintGraphIsCyclic(const unsigned numVars, Variable* const vars[]) {
     map<Variable*, node*> varmap;
     vector<node*> graph;
-    for(unsigned i=0;i<n;i++) {
+    for(unsigned i=0;i<numVars;i++) {
         node *u=new node;
         graph.push_back(u);
-        varmap[vs[i]]=u;
+        varmap[vars[i]]=u;
     }
-    for(unsigned i=0;i<n;i++) {
-        for(vector<Constraint*>::iterator c=vs[i]->in.begin();c!=vs[i]->in.end();++c) {
+    for(unsigned i=0;i<numVars;i++) {
+        for(vector<Constraint*>::iterator c=vars[i]->in.begin();c!=vars[i]->in.end();++c) {
             Variable *l=(*c)->left;
-            varmap[vs[i]]->in.insert(varmap[l]);
+            varmap[vars[i]]->in.insert(varmap[l]);
         }
 
-        for(vector<Constraint*>::iterator c=vs[i]->out.begin();c!=vs[i]->out.end();++c) {
+        for(vector<Constraint*>::iterator c=vars[i]->out.begin();c!=vars[i]->out.end();++c) {
             Variable *r=(*c)->right;
-            varmap[vs[i]]->out.insert(varmap[r]);
+            varmap[vars[i]]->out.insert(varmap[r]);
         }
     }
     while(graph.size()>0) {

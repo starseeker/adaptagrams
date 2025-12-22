@@ -144,8 +144,8 @@ ReferencingPolygon::ReferencingPolygon(const Polygon& poly, const Router *router
             {
                 if ((*sh)->id() == poly.ps[i].id)
                 {
-                    const Polygon& poly = (*sh)->polygon();
-                    polyPtr = &poly;
+                    const Polygon& shapePoly = (*sh)->polygon();
+                    polyPtr = &shapePoly;
                     break;
                 }
             }

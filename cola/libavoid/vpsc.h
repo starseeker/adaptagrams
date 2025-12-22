@@ -289,7 +289,7 @@ struct UnsatisfiableException {
     Constraints path;
 };
 struct UnsatisfiedConstraint {
-    UnsatisfiedConstraint(Constraint& c):c(c) {}
+    UnsatisfiedConstraint(Constraint& c_):c(c_) {}
     Constraint& c;
 };
 /*

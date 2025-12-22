@@ -724,10 +724,10 @@ void HyperedgeImprover::outputHyperedgesToSVG(unsigned int pass,
             activeSegment->settled() ? "red" : "orange");
     }
 
-    for (JunctionSet::iterator curr = m_hyperedge_tree_roots.begin();
-            curr != m_hyperedge_tree_roots.end(); ++curr)
+    for (JunctionSet::iterator juncIt = m_hyperedge_tree_roots.begin();
+            juncIt != m_hyperedge_tree_roots.end(); ++juncIt)
     {
-        HyperedgeTreeNode *node = m_hyperedge_tree_junctions[*curr];
+        HyperedgeTreeNode *node = m_hyperedge_tree_junctions[*juncIt];
 
         node->outputEdgesExcept(fp, nullptr);
     }

@@ -49,11 +49,11 @@ using std::copy;
 namespace vpsc {
 
 
-Blocks::Blocks(vector<Variable*> const &vs) : vs(vs),nvs(vs.size()) {
+Blocks::Blocks(vector<Variable*> const &vs_) : vs(vs_),nvs(vs_.size()) {
     blockTimeCtr=0;
     m_blocks.resize(nvs);
     for(size_t i=0;i<nvs;i++) {
-        m_blocks[i] = new Block(this, vs[i]);
+        m_blocks[i] = new Block(this, vs_[i]);
     }
 }
 Blocks::~Blocks(void)

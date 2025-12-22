@@ -391,8 +391,8 @@ bool HyperedgeTreeNode::isImmovable(void) const
 // Constructs a new hyperedge tree edge, given two endpoint nodes.
 //
 HyperedgeTreeEdge::HyperedgeTreeEdge(HyperedgeTreeNode *node1,
-        HyperedgeTreeNode *node2, ConnRef *conn)
-    : conn(conn),
+        HyperedgeTreeNode *node2, ConnRef *conn_)
+    : conn(conn_),
       hasFixedRoute(false)
 {
     if (conn)
