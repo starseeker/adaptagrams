@@ -846,9 +846,9 @@ MultiSeparationConstraint::getCurrSubConstraintAlternatives(
 }
 
 
-void MultiSeparationConstraint::setSeparation(double sep) 
+void MultiSeparationConstraint::setSeparation(double sep_) 
 { 
-    this->sep = sep;
+    this->sep = sep_;
 }
 
 
@@ -909,9 +909,9 @@ void DistributionConstraint::generateVariables(const vpsc::Dim dim,
 }
 
 
-void DistributionConstraint::setSeparation(double sep) 
+void DistributionConstraint::setSeparation(double sep_) 
 {
-    this->sep = sep;
+    this->sep = sep_;
 }
 
 
@@ -1039,11 +1039,11 @@ void DistributionConstraint::generateSeparationConstraints(
 class RelativeOffset : public SubConstraintInfo
 {
     public:
-        RelativeOffset(unsigned indL, unsigned indR, vpsc::Dim dim,
+        RelativeOffset(unsigned indL, unsigned indR, vpsc::Dim dim_,
                 double offset)
             : SubConstraintInfo(indL),
               varIndex2(indR),
-              dim(dim),
+              dim(dim_),
               distOffset(offset)
         {
         }
@@ -1416,9 +1416,9 @@ void PageBoundaryConstraints::generateSeparationConstraints(
 
 struct GenerateVariables 
 {
-    GenerateVariables(const vpsc::Dim dim, vpsc::Variables& vars) 
-        : dim(dim),
-          vars(vars) 
+    GenerateVariables(const vpsc::Dim dim_, vpsc::Variables& vars_) 
+        : dim(dim_),
+          vars(vars_) 
     {
     }
     void operator() (CompoundConstraint *c) 
