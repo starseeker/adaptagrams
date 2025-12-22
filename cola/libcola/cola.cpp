@@ -348,14 +348,14 @@ void ConstrainedMajorizationLayout::run(bool x, bool y) {
                 for(vector<Lock>::iterator l=preIteration->locks.begin();
                         l!=preIteration->locks.end();l++) {
                     unsigned id=l->getID();
-                    double x=l->pos(HORIZONTAL), y=l->pos(VERTICAL);
-                    X[id]=x;
-                    Y[id]=y;
+                    double lockX=l->pos(HORIZONTAL), lockY=l->pos(VERTICAL);
+                    X[id]=lockX;
+                    Y[id]=lockY;
                     if(stickyNodes) {
-                        startX[id]=x;
-                        startY[id]=y;
+                        startX[id]=lockX;
+                        startY[id]=lockY;
                     }
-                    boundingBoxes[id]->moveCentre(x,y);
+                    boundingBoxes[id]->moveCentre(lockX,lockY);
                     if(constrainedLayout) {
                         gpX->fixPos(id,X[id]); 
                         gpY->fixPos(id,Y[id]);
