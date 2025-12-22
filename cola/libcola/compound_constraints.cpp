@@ -1433,12 +1433,12 @@ struct GenerateVariables
 
 struct GenerateSeparationConstraints 
 {
-    GenerateSeparationConstraints(const vpsc::Dim dim, vpsc::Variables& vars, 
-            vpsc::Constraints& cs, vpsc::Rectangles& bbs) 
-        : dim(dim),
-          vars(vars), 
-          cs(cs),
-          bbs(bbs)
+    GenerateSeparationConstraints(const vpsc::Dim dim_, vpsc::Variables& vars_, 
+            vpsc::Constraints& cs_, vpsc::Rectangles& bbs_) 
+        : dim(dim_),
+          vars(vars_), 
+          cs(cs_),
+          bbs(bbs_)
     {
     }
     void operator() (CompoundConstraint *c) 

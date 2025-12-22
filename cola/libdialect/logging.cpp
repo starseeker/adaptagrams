@@ -35,13 +35,13 @@ using namespace dialect;
 using std::string;
 using std::vector;
 
-Logger::Logger(std::string outputDir, std::string prefix, bool verbose, bool addSVG)
-    : outputDir(outputDir), prefix(prefix), verbose(verbose), addSVG(addSVG)
+Logger::Logger(std::string outputDir_, std::string prefix_, bool verbose_, bool addSVG_)
+    : outputDir(outputDir_), prefix(prefix_), verbose(verbose_), addSVG(addSVG_)
 {
-    if (outputDir.size() > 0) hasOutputDir = true;
-    if (prefix.size() > 0) {
+    if (outputDir_.size() > 0) hasOutputDir = true;
+    if (prefix_.size() > 0) {
         hasPrefix = true;
-        prefix += "_";
+        prefix_ += "_";
     }
 }
 

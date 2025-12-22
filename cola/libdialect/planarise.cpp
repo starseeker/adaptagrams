@@ -100,14 +100,14 @@ void EdgeSegment::addSep(SepMatrix &m) const {
     m.addSep(openingNode->id(), closingNode->id(), GapType::CENTRE, d, SepType::INEQ, upperBound - lowerBound);
 }
 
-Event::Event(EdgeSegment *seg, Node_SP endpt, EventType type)
-    : seg(seg),
-      endpt(endpt),
-      type(type),
+Event::Event(EdgeSegment *seg_, Node_SP endpt_, EventType type_)
+    : seg(seg_),
+      endpt(endpt_),
+      type(type_),
       companion(nullptr)
 {
-    Point c = endpt->getCentre();
-    constCoord = seg->orientation == vpsc::HORIZONTAL ? c.y : c.x;
+    Point c = endpt_->getCentre();
+    constCoord = seg_->orientation == vpsc::HORIZONTAL ? c.y : c.x;
     varCoord = seg->orientation == vpsc::HORIZONTAL ? c.x : c.y;
 }
 
