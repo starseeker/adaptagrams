@@ -286,14 +286,6 @@ void MinimumTerminalSpanningTree::constructSequential(void)
     //
     TIMER_START(router, tmHyperedgeForest);
 
-    // Vertex heap for extended Dijkstra's algorithm.
-    std::vector<VertInf *> vHeap_;
-    HeapCmpVertInf vHeapCompare_;
-
-    // Bridging edge heap for the extended Kruskal's algorithm.
-    std::vector<EdgeInf *> beHeap_;
-    CmpEdgeInf beHeapCompare_;
-
 #ifdef DEBUGHANDLER
     if (router->debugHandler())
     {
@@ -319,21 +311,21 @@ void MinimumTerminalSpanningTree::constructSequential(void)
         // This is a terminal, set a distance of zero.
         t->sptfDist = 0;
         makeSet(t);
-        vHeap_.push_back(t);
+        vHeap.push_back(t);
 
     }
-    std::make_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
+    std::make_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
 
     // Shortest path terminal forest construction
     //
-    while ( ! vHeap_.empty() )
+    while ( ! vHeap.empty() )
     {
         // Take the lowest vertex from heap.
-        VertInf *u = vHeap_.front();
+        VertInf *u = vHeap.front();
 
         // Pop the lowest vertex off the heap.
-        std::pop_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
-        vHeap_.pop_back();
+        std::pop_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
+        vHeap.pop_back();
 
         // For each edge from this vertex...
         EdgeInfList& visList = (!isOrthogonal) ? u->visList : u->orthogVisList;
@@ -396,8 +388,8 @@ void MinimumTerminalSpanningTree::constructSequential(void)
                     extraVertex->sptfDist = bendPenalty + u->sptfDist;
                     extraVertex->pathNext = u;
                     extraVertex->setSPTFRoot(u->sptfRoot());
-                    vHeap_.push_back(extraVertex);
-                    std::push_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
+                    vHeap.push_back(extraVertex);
+                    std::push_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
                 }
                 // Add a copy of the ignored edge to the dummy node, so it
                 // may be explored later.
@@ -415,8 +407,8 @@ void MinimumTerminalSpanningTree::constructSequential(void)
                 v->sptfDist = newCost;
                 v->pathNext = u;
                 v->setSPTFRoot(u->sptfRoot());
-                vHeap_.push_back(v);
-                std::push_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
+                vHeap.push_back(v);
+                std::push_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
 #ifdef DEBUGHANDLER
                 if (router->debugHandler())
                 {
@@ -439,7 +431,7 @@ void MinimumTerminalSpanningTree::constructSequential(void)
                         (*edge)->m_vert2->sptfDist + secondJoinCost +
                         (*edge)->getDist();
                 (*edge)->setMtstDist(cost);
-                beHeap_.push_back(*edge);
+                beHeap.push_back(*edge);
 
 #ifdef DEBUGHANDLER
                 if (router->debugHandler())
@@ -451,21 +443,21 @@ void MinimumTerminalSpanningTree::constructSequential(void)
         }
     }
     // Make the bridging edge heap.
-    std::make_heap(beHeap_.begin(), beHeap_.end(), beHeapCompare_);
+    std::make_heap(beHeap.begin(), beHeap.end(), beHeapCompare);
     TIMER_STOP(router);
 
     // Next, perform extended Kruskal's algorithm
     // ==========================================
     //
     TIMER_START(router, tmHyperedgeMTST);
-    while ( ! beHeap_.empty() )
+    while ( ! beHeap.empty() )
     {
         // Take the lowest cost edge.
-        EdgeInf *e = beHeap_.front();
+        EdgeInf *e = beHeap.front();
 
         // Pop the lowest cost edge off of the heap.
-        std::pop_heap(beHeap_.begin(), beHeap_.end(), beHeapCompare_);
-        beHeap_.pop_back();
+        std::pop_heap(beHeap.begin(), beHeap.end(), beHeapCompare);
+        beHeap.pop_back();
 
         // Find the sets of terminals that each of the trees connects.
         VertexSetList::iterator s1 = findSet(e->m_vert1->sptfRoot());
@@ -544,12 +536,12 @@ void MinimumTerminalSpanningTree::removeInvalidBridgingEdges()
 {
     // Look through the bridging edge heap for any now invalidated edges and
     // remove these by only copying valid edges to the beHeapNew array.
-    size_t beHeapSize = beHeap_.size();
+    size_t beHeapSize = beHeap.size();
     std::vector<EdgeInf *> beHeapNew(beHeapSize);
     size_t j = 0;
     for (size_t i = 0; i < beHeapSize; ++i)
     {
-        EdgeInf *e = beHeap_[i];
+        EdgeInf *e = beHeap[i];
 
         VertexPair ends = realVerticesCountingPartners(e);
         bool valid = (ends.first->treeRoot() != ends.second->treeRoot()) &&
@@ -563,15 +555,15 @@ void MinimumTerminalSpanningTree::removeInvalidBridgingEdges()
         }
 
         // Copy the other bridging edges to beHeapNew.
-        beHeapNew[j] = beHeap_[i];
+        beHeapNew[j] = beHeap[i];
         ++j;
     }
     beHeapNew.resize(j);
-    // Replace beHeap_ with beHeapNew
-    beHeap_ = beHeapNew;
+    // Replace beHeap with beHeapNew
+    beHeap = beHeapNew;
 
     // Remake the bridging edge heap, since we've deleted many elements.
-    std::make_heap(beHeap_.begin(), beHeap_.end(), beHeapCompare_);
+    std::make_heap(beHeap.begin(), beHeap.end(), beHeapCompare);
 }
 
 LayeredOrthogonalEdgeList MinimumTerminalSpanningTree::
@@ -667,7 +659,7 @@ void MinimumTerminalSpanningTree::constructInterleaved(void)
         // This is a terminal, set a distance of zero.
         t->sptfDist = 0;
         rootVertexPointers.push_back(t->makeTreeRootPointer(t));
-        vHeap_.push_back(t);
+        vHeap.push_back(t);
     }
     for (EdgeInf *t = router->visOrthogGraph.begin();
             t != router->visOrthogGraph.end(); t = t->lstNext)
@@ -675,27 +667,27 @@ void MinimumTerminalSpanningTree::constructInterleaved(void)
         t->setHyperedgeSegment(false);
     }
 
-    std::make_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
+    std::make_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
 
     // Shortest Path Terminal Forest construction
     //
-    while ( ! vHeap_.empty() )
+    while ( ! vHeap.empty() )
     {
         // Take the lowest vertex from heap.
-        VertInf *u = vHeap_.front();
+        VertInf *u = vHeap.front();
 
         // There should be no orphaned vertices.
         COLA_ASSERT(u->treeRoot() != nullptr);
         COLA_ASSERT(u->pathNext || (u->sptfDist == 0));
 
-        if (!beHeap_.empty() && u->sptfDist >= (0.5 * beHeap_.front()->mtstDist()))
+        if (!beHeap.empty() && u->sptfDist >= (0.5 * beHeap.front()->mtstDist()))
         {
             // Take the lowest cost edge.
-            EdgeInf *e = beHeap_.front();
+            EdgeInf *e = beHeap.front();
 
             // Pop the lowest cost edge off of the heap.
-            std::pop_heap(beHeap_.begin(), beHeap_.end(), beHeapCompare_);
-            beHeap_.pop_back();
+            std::pop_heap(beHeap.begin(), beHeap.end(), beHeapCompare);
+            beHeap.pop_back();
 
 #ifndef NDEBUG
             VertexPair ends = realVerticesCountingPartners(e);
@@ -717,8 +709,8 @@ void MinimumTerminalSpanningTree::constructInterleaved(void)
         }
 
         // Pop the lowest vertex off the heap.
-        std::pop_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
-        vHeap_.pop_back();
+        std::pop_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
+        vHeap.pop_back();
 
         // For each edge from this vertex...
         LayeredOrthogonalEdgeList edgeList = getOrthogonalEdgesFromVertex(u,
@@ -766,10 +758,10 @@ void MinimumTerminalSpanningTree::constructInterleaved(void)
                 v->sptfDist = newCost;
                 v->pathNext = u;
                 v->setTreeRootPointer(u->treeRootPointer());
-                vHeap_.push_back(v);
+                vHeap.push_back(v);
                 // This can change the cost of other vertices in the heap,
                 // so we need to remake it.
-                std::make_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
+                std::make_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
 
 #ifdef DEBUGHANDLER
                 if (router->debugHandler())
@@ -785,13 +777,13 @@ void MinimumTerminalSpanningTree::constructInterleaved(void)
                 // edge and push it to the priority queue of edges to consider
                 // during the extended Kruskal's algorithm.
                 double cost = v->sptfDist + u->sptfDist + e->getDist();
-                bool found = std::find(beHeap_.begin(), beHeap_.end(), e) != beHeap_.end();
+                bool found = std::find(beHeap.begin(), beHeap.end(), e) != beHeap.end();
                 if (!found)
                 {
                     // We need to add the edge to the bridging edge heap.
                     e->setMtstDist(cost);
-                    beHeap_.push_back(e);
-                    std::push_heap(beHeap_.begin(), beHeap_.end(), beHeapCompare_);
+                    beHeap.push_back(e);
+                    std::push_heap(beHeap.begin(), beHeap.end(), beHeapCompare);
 #ifdef DEBUGHANDLER
                     if (router->debugHandler())
                     {
@@ -807,7 +799,7 @@ void MinimumTerminalSpanningTree::constructInterleaved(void)
                         // Update the edge's mtstDist if we compute a lower
                         // cost than we had before.
                         e->setMtstDist(cost);
-                        std::make_heap(beHeap_.begin(), beHeap_.end(), beHeapCompare_);
+                        std::make_heap(beHeap.begin(), beHeap.end(), beHeapCompare);
                     }
                 }
             }
@@ -1056,13 +1048,13 @@ void MinimumTerminalSpanningTree::commitToBridgingEdge(EdgeInf *e)
     }
 
     // Remove newly orphaned vertices from vertex heap by only copying the
-    // valid vertices to vHeapNew array which then replaces vHeap_.
-    std::vector<VertInf *> vHeapNew(vHeap_.size());
+    // valid vertices to vHeapNew array which then replaces vHeap.
+    std::vector<VertInf *> vHeapNew(vHeap.size());
     size_t j = 0;
-    size_t vHeapSize = vHeap_.size();
+    size_t vHeapSize = vHeap.size();
     for (size_t i = 0; i < vHeapSize; ++i)
     {
-        VertInf *v = vHeap_[i];
+        VertInf *v = vHeap[i];
 
         if ((v->treeRoot() == nullptr))
         {
@@ -1071,24 +1063,24 @@ void MinimumTerminalSpanningTree::commitToBridgingEdge(EdgeInf *e)
         }
 
         // Copy the other vertices to vHeapNew.
-        vHeapNew[j] = vHeap_[i];
+        vHeapNew[j] = vHeap[i];
         ++j;
     }
     vHeapNew.resize(j);
-    // Replace vHeap_ with vHeapNew
-    vHeap_ = vHeapNew;
+    // Replace vHeap with vHeapNew
+    vHeap = vHeapNew;
 
     // Reset all terminals to zero.
     for (std::set<VertInf *>::iterator v2 = terminals.begin();
             v2 != terminals.end(); ++v2)
     {
         COLA_ASSERT((*v2)->sptfDist == 0);
-        vHeap_.push_back(*v2);
+        vHeap.push_back(*v2);
     }
 
     // Rebuild the heap since some terminals will have had distances
     // rewritten as well as the orphaned vertices being removed.
-    std::make_heap(vHeap_.begin(), vHeap_.end(), vHeapCompare_);
+    std::make_heap(vHeap.begin(), vHeap.end(), vHeapCompare);
 }
 
 }
