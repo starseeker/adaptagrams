@@ -687,7 +687,7 @@ public:
      *
      * @param[in] ccs  The compound constraints.
      */
-    void setConstraints(const cola::CompoundConstraints& ccs);
+    void setConstraints(const cola::CompoundConstraints& ccs_);
 
     /**
      * @brief  Specifies whether non-overlap constraints should be
@@ -722,7 +722,7 @@ public:
     void setTopology(TopologyAddonInterface *topology); 
     TopologyAddonInterface *getTopology(void);
     
-    void setDesiredPositions(DesiredPositions *desiredPositions);
+    void setDesiredPositions(DesiredPositions *desiredPositions_);
 
     /**
      * @brief  Specifies an optional hierarchy for clustering nodes.
@@ -889,7 +889,7 @@ private:
             vpsc::Variables (&vars)[2], unsigned int& priority, 
             cola::NonOverlapConstraints *noc, Cluster *cluster, 
             cola::CompoundConstraints& idleConstraints);
-    std::vector<double> offsetDir(double minD);
+    std::vector<double> offsetDir(double minDist);
 
     void computeNeighbours(std::vector<Edge> es);
     std::vector<std::vector<unsigned> > neighbours;

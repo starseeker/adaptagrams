@@ -158,8 +158,8 @@ string Edge::writePolylineConnectorData(void) const {
     Point p = route.front();
     ss << string_format("M %.2f,%.2f", p.x, p.y);
     for (auto it = route.begin() + 1; it != route.end(); ++it) {
-        Point p = *it;
-        ss << string_format("L %.2f,%.2f", p.x, p.y);
+        Point pt = *it;
+        ss << string_format("L %.2f,%.2f", pt.x, pt.y);
     }
     return ss.str();
 }

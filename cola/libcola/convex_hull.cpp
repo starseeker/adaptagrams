@@ -42,8 +42,8 @@ inline double crossProduct(
 struct CounterClockwiseOrder {
     CounterClockwiseOrder(
             const unsigned p,
-            std::valarray<double> const & X, std::valarray<double> const & Y)
-        :px(X[p]), py(Y[p]), X(X), Y(Y) {};
+            std::valarray<double> const & X_, std::valarray<double> const & Y_)
+        :px(X_[p]), py(Y_[p]), X(X_), Y(Y_) {};
     bool operator() (unsigned i, unsigned j) {
         // o=crossProduct(px,py,X[i],Y[i],X[j],Y[j]);
         double xi=X[i]-px;
