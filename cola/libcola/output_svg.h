@@ -38,19 +38,19 @@ public:
 	std::string const fname;
 	bool rects;
 	bool curvedEdges;
-	OutputFile(std::vector<vpsc::Rectangle*> const &rs, 
-		std::vector<cola::Edge> const &es, 
-		cola::RootCluster const * rc, 
-		std::string const fname,
-		const bool rects=false,
-		const bool curvedEdges=false)
-		: rs(rs),
-		  es(es),
+	OutputFile(std::vector<vpsc::Rectangle*> const &rs_, 
+		std::vector<cola::Edge> const &es_, 
+		cola::RootCluster const * rc_, 
+		std::string const fname_,
+		const bool rects_=false,
+		const bool curvedEdges_=false)
+		: rs(rs_),
+		  es(es_),
 		  routes(nullptr),
-		  rc(rc),
-		  fname(fname),
-		  rects(rects),
-		  curvedEdges(curvedEdges) {}
+		  rc(rc_),
+		  fname(fname_),
+		  rects(rects_),
+		  curvedEdges(curvedEdges_) {}
 	void generate();
     void setLabels(std::vector<std::string> ls) {
         labels.resize(ls.size());
