@@ -1438,13 +1438,13 @@ static void setupOrthogonalLayoutConstraints(Router *router,
         while (needsSolving)
         {
             // Solve with this constraint set.
-            vpsc::Constraints nonRedundantCs =
+            vpsc::Constraints innerNonRedundantCs =
                     constraintsRemovingRedundantEqualities(vs, valid);
-            vpsc::IncSolver vpscInstance(vs, nonRedundantCs);
+            vpsc::IncSolver innerVpscInstance(vs, innerNonRedundantCs);
 #ifdef ORTHOG_TOPOLOGY_DEBUG
             fprintf(stderr, "Solving...!\n");
 #endif
-            vpscInstance.satisfy();
+            innerVpscInstance.satisfy();
             needsSolving = false;
 
             for (vpsc::Constraints::iterator it = valid.begin();

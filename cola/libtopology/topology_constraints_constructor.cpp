@@ -220,9 +220,9 @@ struct SegmentOpen : SegmentEvent {
         openListIndex=openSegments.insert(openSegments.end(),this);
     }
     string toString() {
-        stringstream s;
-        s<<"SegmentOpen@"<<pos;
-        return s.str();
+        stringstream str;
+        str<<"SegmentOpen@"<<pos;
+        return str.str();
     }
 };
 /*
@@ -246,9 +246,9 @@ struct SegmentClose : SegmentEvent {
         delete this;
     }
     string toString() {
-        stringstream s;
-        s<<"SegmentClose@"<<pos;
-        return s.str();
+        stringstream str;
+        str<<"SegmentClose@"<<pos;
+        return str.str();
     }
 };
 /* 
@@ -634,14 +634,14 @@ static void recCreateTopologyClusterNodes(cola::Cluster *cluster,
 }
 
 TopologyConstraints::TopologyConstraints(const vpsc::Dim axisDim, Nodes& nodes_,
-        Edges& edges_, cola::RootCluster* clusterHierarchy, vpsc::Variables& vs,
-        vpsc::Constraints& cs)
+        Edges& edges_, cola::RootCluster* clusterHierarchy, vpsc::Variables& vs_,
+        vpsc::Constraints& cs_)
     : n(nodes_.size()),
       nodes(nodes_),
       edges(edges_),
       clusters(clusterHierarchy),
-      vs(vs),
-      cs(cs),
+      vs(vs_),
+      cs(cs_),
       dim(axisDim)
 {
     /*
