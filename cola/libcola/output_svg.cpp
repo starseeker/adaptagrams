@@ -54,7 +54,6 @@ void OutputFile::generate() {
         }
     }
 
-#if defined (CAIRO_HAS_SVG_SURFACE) && defined (CAIRO_HAS_PDF_SURFACE)
     double width,height,r=2;
     if(rects) r=rs[0]->width()/2;
     double xmin=DBL_MAX, ymin=xmin;
@@ -73,32 +72,31 @@ void OutputFile::generate() {
     width=xmax-xmin;
     height=ymax-ymin;
 
-    Cairo::RefPtr<Cairo::Context> cr;
-    openCairo(cr,width,height);
+    SVGWriter svg(width, height);
 
     /* set background colour
-    cr->save(); // save the state of the context
-    cr->set_source_rgb(0.86, 0.85, 0.47);
-    cr->paint();    // fill image with the color
-    cr->restore();  // color is back to black now
+    svg.save(); // save the state of the context
+    svg.set_source_rgb(0.86, 0.85, 0.47);
+    svg.paint();    // fill image with the color
+    svg.restore();  // color is back to black now
     */
 
-    cr->set_line_width(1.);
-    cr->set_font_size(8);
-    cr->save();
+    svg.set_line_width(1.);
+    svg.set_font_size(8);
+    svg.save();
     if(rc) for(Clusters::const_iterator c=rc->clusters.begin();c!=rc->clusters.end();c++) {
-        draw_cluster_boundary(cr,**c,xmin,ymin);
+        draw_cluster_boundary(svg,**c,xmin,ymin);
     }
     if(curvedEdges)
-        draw_curved_edges(cr,es,xmin,ymin);
+        draw_curved_edges(svg,es,xmin,ymin);
     else 
-        draw_edges(cr,*routes,xmin,ymin);
-    Cairo::TextExtents te;
+        draw_edges(svg,*routes,xmin,ymin);
+    SVGWriter::TextExtents te;
     for (unsigned i=0;i<rs.size();i++) {
         if(!rects) {
             double x=rs[i]->getCentreX()-xmin, y=rs[i]->getCentreY()-ymin;
-            cr->arc(x,y,r, 0.0, 2.0 * M_PI);
-            cr->fill();
+            svg.arc(x,y,r, 0.0, 2.0 * M_PI);
+            svg.fill();
         } else {
             double x=rs[i]->getMinX()-xmin+0.5, y=rs[i]->getMinY()-ymin+0.5;
             std::string str;
@@ -108,38 +106,31 @@ void OutputFile::generate() {
                 std::stringstream s; s<<i;
                 str=s.str();
             }
-            cr->get_text_extents(str,te);
+            svg.get_text_extents(str,te);
             /*
             double llx = x-te.width/2.-1;
             double lly = y-te.height/2.-1;
-            cr->rectangle(llx,lly,te.width+2,te.height+2);
+            svg.rectangle(llx,lly,te.width+2,te.height+2);
             */
-            cr->rectangle(x,y,
+            svg.rectangle(x,y,
                     rs[i]->width()-1,rs[i]->height()-1);
-            cr->stroke_preserve();
-            cr->save();
-            cr->set_source_rgba(245./255., 233./255., 177./255., 0.6);
-            cr->fill();
-            cr->restore();
+            svg.stroke_preserve();
+            svg.save();
+            svg.set_source_rgba(245./255., 233./255., 177./255., 0.6);
+            svg.fill();
+            svg.restore();
             if(labels.size()==rs.size()) {
-                cr->move_to(x-te.x_bearing+te.width/2.,y-te.y_bearing+te.height/2.);
-                cr->show_text(str);
+                svg.move_to(x-te.x_bearing+te.width/2.,y-te.y_bearing+te.height/2.);
+                svg.show_text(str);
             }
-            cr->stroke();
+            svg.stroke();
         }
     }
 
-    cr->show_page();
+    svg.show_page();
 
+    svg.write_to_file(fname);
     std::cout << "Wrote file \"" << fname << "\"" << std::endl;
-
-#else
-    std::cout << 
-            "WARNING: cola::OutputFile::generate(): No SVG file produced." <<
-            std::endl <<
-            "         You must have cairomm (and cairo with SVG support) " <<
-            "this to work." << std::endl;
-#endif
 
     if(cleanupRoutes) {
         for(unsigned i=0;i<E;i++) {
@@ -149,45 +140,44 @@ void OutputFile::generate() {
     }
 }
 
-#ifdef HAVE_CAIROMM
-void OutputFile::draw_cluster_boundary(Cairo::RefPtr<Cairo::Context> const &cr,
+void OutputFile::draw_cluster_boundary(SVGWriter &svg,
         Cluster &c,
         const double xmin,
         const double ymin) {
     c.computeBoundary(rs);
-    cr->save();
+    svg.save();
     // background
-    cr->set_source_rgb(0.7, 0.7, 224./255.);
-    cr->move_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
+    svg.set_source_rgb(0.7, 0.7, 224./255.);
+    svg.move_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
     for(unsigned i=1;i<c.hullX.size();i++) {
-        cr->line_to(c.hullX[i]-xmin,c.hullY[i]-ymin);
+        svg.line_to(c.hullX[i]-xmin,c.hullY[i]-ymin);
     }
-    cr->line_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
-    cr->fill();
-    cr->restore();
+    svg.line_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
+    svg.fill();
+    svg.restore();
     // outline
-    cr->move_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
+    svg.move_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
     for(unsigned i=1;i<c.hullX.size();i++) {
-        cr->line_to(c.hullX[i]-xmin,c.hullY[i]-ymin);
+        svg.line_to(c.hullX[i]-xmin,c.hullY[i]-ymin);
     }
-    cr->line_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
-    cr->stroke();
+    svg.line_to(c.hullX[0]-xmin,c.hullY[0]-ymin);
+    svg.stroke();
 }
 
-void OutputFile::draw_edges(Cairo::RefPtr<Cairo::Context> &cr,
+void OutputFile::draw_edges(SVGWriter &svg,
  vector<straightener::Route*> const & es, double const xmin, double const ymin) {
-    cr->save();
+    svg.save();
     // background
-    cr->set_source_rgba(0,0,1,0.5);
+    svg.set_source_rgba(0,0,1,0.5);
     for (unsigned i=0;i<es.size();i++) {
         const straightener::Route* r=es[i];
-        cr->move_to(r->xs[0]-xmin,r->ys[0]-ymin);
+        svg.move_to(r->xs[0]-xmin,r->ys[0]-ymin);
         for (unsigned j=1;j<r->n;j++) {
-            cr->line_to(r->xs[j]-xmin,r->ys[j]-ymin);
+            svg.line_to(r->xs[j]-xmin,r->ys[j]-ymin);
         }
-        cr->stroke();
+        svg.stroke();
     }
-    cr->restore();
+    svg.restore();
 }
 
 namespace bundles {
@@ -265,7 +255,7 @@ struct clockwise {
  * between adjacent edges outgoing from a particular node shared if the angle between them
  * is less than pi/8
  */
-void OutputFile::draw_curved_edges(Cairo::RefPtr<Cairo::Context> &cr,
+void OutputFile::draw_curved_edges(SVGWriter &svg,
         vector<cola::Edge> const & es, 
         const double xmin, 
         const double ymin) {
@@ -361,29 +351,14 @@ void OutputFile::draw_curved_edges(Cairo::RefPtr<Cairo::Context> &cr,
         }
     }
 
-    cr->save();
+    svg.save();
     // background
-    cr->set_source_rgba(0,0,1,0.2);
+    svg.set_source_rgba(0,0,1,0.2);
     for (unsigned i=0;i<edges.size();i++) {
         CEdge &e=edges[i];
-        cr->move_to(e.x0,e.y0);
-        cr->curve_to(e.x1,e.y1,e.x2,e.y2,e.x3,e.y3);
-        cr->stroke();
+        svg.move_to(e.x0,e.y0);
+        svg.curve_to(e.x1,e.y1,e.x2,e.y2,e.x3,e.y3);
+        svg.stroke();
     }
-    cr->restore();
+    svg.restore();
 }
-void OutputFile::openCairo(Cairo::RefPtr<Cairo::Context> &cr, double width, double height) {
-    if(fname.rfind("pdf") == (fname.length()-3) ) {
-        printf("writing pdf file: %s\n",fname.c_str());
-        Cairo::RefPtr<Cairo::PdfSurface> pdfsurface =
-            Cairo::PdfSurface::create(fname, width, height);
-        cr = Cairo::Context::create(pdfsurface);
-    } else {
-        printf("writing svg file: %s\n",fname.c_str());
-        Cairo::RefPtr<Cairo::SvgSurface> svgsurface =
-            Cairo::SvgSurface::create(fname, width, height);
-        cr = Cairo::Context::create(svgsurface);
-    }
-}
-
-#endif // HAVE_CAIROMM

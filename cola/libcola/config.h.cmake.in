@@ -1,8 +1,5 @@
 /* libcola/config.h.  Generated from config.h.cmake.in by cmake.  */
 
-/* Enable CairoMM code */
-/* #undef HAVE_CAIROMM */
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #cmakedefine01 HAVE_DLFCN_H
 
