@@ -85,7 +85,7 @@ struct Event {
 
     //! @brief  Constructor for use with the "near alignments" process.
     //!         See nearalign.h.
-    Event(double varCoord, Node_SP node, EventType type);
+    Event(double varCoord_, Node_SP node, EventType type_);
 
     Node_SP getNode(void) { return endpt; }
 

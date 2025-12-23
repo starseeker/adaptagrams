@@ -47,12 +47,12 @@ void feach(Container& c, Op op) {
  * In either case the desired position is the centre of the target.
  */
 struct TransformNode {
-    TransformNode(vpsc::Dim dim, const Rectangles& targets,
-            const ResizeMap& resizes, Variables& vs)
-        : dim(dim),
-          targets(targets),
-          resizes(resizes),
-          vs(vs)
+    TransformNode(vpsc::Dim dim_, const Rectangles& targets_,
+            const ResizeMap& resizes_, Variables& vs_)
+        : dim(dim_),
+          targets(targets_),
+          resizes(resizes_),
+          vs(vs_)
     {
     }
     Node* operator() (Node* u) {
@@ -81,12 +81,12 @@ struct TransformNode {
  */
 struct CreateLeftRightDummyNodes
 {
-    CreateLeftRightDummyNodes(vpsc::Dim dim, const Rectangles& targets,
-            Nodes& nodes, Variables& vs)
-        : dim(dim),
-          targets(targets),
-          nodes(nodes),
-          vs(vs)
+    CreateLeftRightDummyNodes(vpsc::Dim dim_, const Rectangles& targets_,
+            Nodes& nodes_, Variables& vs_)
+        : dim(dim_),
+          targets(targets_),
+          nodes(nodes_),
+          vs(vs_)
     {
     }
     void operator() (pair<const unsigned, ResizeInfo>& p) {
@@ -131,10 +131,10 @@ struct CreateLeftRightDummyNodes
  */
 struct SubstituteNodes
 {
-    SubstituteNodes(vpsc::Dim dim, ResizeMap& resizes, const Nodes& tn)
-        : dim(dim),
-          resizes(resizes),
-          tn(tn)
+    SubstituteNodes(vpsc::Dim dim_, ResizeMap& resizes_, const Nodes& tn_)
+        : dim(dim_),
+          resizes(resizes_),
+          tn(tn_)
     {
     }
     void operator() (Edge* e) {
@@ -181,8 +181,8 @@ struct SubstituteNodes
     const topology::Nodes& tn;
 };
 struct RevertNodes {
-    RevertNodes(Nodes& orig) 
-        : orig(orig) {}
+    RevertNodes(Nodes& orig_) 
+        : orig(orig_) {}
     void operator() (Edge* e) {
         e->forEachEdgePoint(*this);
     }
@@ -192,10 +192,10 @@ struct RevertNodes {
     Nodes& orig;
 };
 struct CopyPositions {
-    CopyPositions(vpsc::Dim dim, const Nodes& tn, const ResizeMap& rm)
-        : dim(dim),
-          tn(tn),
-          rm(rm)
+    CopyPositions(vpsc::Dim dim_, const Nodes& tn_, const ResizeMap& rm_)
+        : dim(dim_),
+          tn(tn_),
+          rm(rm_)
     {
     }
     void operator() (Node* v) {
@@ -353,7 +353,7 @@ static void resizeAxis(vpsc::Dim dim, const Rectangles& targets,
  * Otherwise, it simply creates a copy of the node's existing rectangle.
  */
 struct CreateTargetRect {
-    CreateTargetRect(ResizeMap& resizes, set<unsigned>& fixed) : resizes(resizes), fixed(fixed) {}
+    CreateTargetRect(ResizeMap& resizes_, set<unsigned>& fixed_) : resizes(resizes_), fixed(fixed_) {}
     Rectangle* operator() (Node* v) {
         ResizeMap::iterator r=resizes.find(v->id);
         Rectangle* target;

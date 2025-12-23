@@ -50,15 +50,15 @@ bool CmpNodePos::operator() (const Node* u, const Node* v) const
 }
 
 
-Node::Node(Obstacle *v, const double p)
-    : v(v),
+Node::Node(Obstacle *v_, const double p)
+    : v(v_),
       c(nullptr),
       ss(nullptr),
       pos(p),
       firstAbove(nullptr),
       firstBelow(nullptr)
 {
-    Box bBox = v->routingBox();
+    Box bBox = v_->routingBox();
     min[XDIM] = bBox.min.x;
     min[YDIM] = bBox.min.y;
     max[XDIM] = bBox.max.x;
@@ -66,22 +66,22 @@ Node::Node(Obstacle *v, const double p)
     //COLA_ASSERT(r->width()<1e40);
 }
 
-Node::Node(VertInf *c, const double p)
+Node::Node(VertInf *c_, const double p)
     : v(nullptr),
-      c(c),
+      c(c_),
       ss(nullptr),
       pos(p),
       firstAbove(nullptr),
       firstBelow(nullptr)
 {
-    min[XDIM] = max[XDIM] = c->point.x;
-    min[YDIM] = max[YDIM] = c->point.y;
+    min[XDIM] = max[XDIM] = c_->point.x;
+    min[YDIM] = max[YDIM] = c_->point.y;
 }
 
-Node::Node(ShiftSegment *ss, const double p)
+Node::Node(ShiftSegment *ss_, const double p)
     : v(nullptr),
       c(nullptr),
-      ss(ss),
+      ss(ss_),
       pos(p),
       firstAbove(nullptr),
       firstBelow(nullptr)
@@ -282,9 +282,9 @@ bool Node::isInsideShape(size_t dimension)
 }
 
 
-Event::Event(EventType t, Node *v, double p) 
+Event::Event(EventType t, Node *v_, double p) 
     : type(t),
-      v(v),
+      v(v_),
       pos(p)
 {
 }

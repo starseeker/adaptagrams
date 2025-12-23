@@ -325,9 +325,9 @@ string SepPair::writeTglf(std::map<id_type, unsigned> id2ext, const SepMatrix &m
            xgtStr = xgt == GapType::BDRY ? "B" : "C",
            ygtStr = ygt == GapType::BDRY ? "B" : "C";
     // Prepare indices.
-    unsigned src, tgt;
-    try { src = id2ext.at(this->src); } catch (std::out_of_range const&) { src = this->src; }
-    try { tgt = id2ext.at(this->tgt); } catch (std::out_of_range const&) { tgt = this->tgt; }
+    unsigned srcIdx, tgtIdx;
+    try { srcIdx = id2ext.at(this->src); } catch (std::out_of_range const&) { srcIdx = this->src; }
+    try { tgtIdx = id2ext.at(this->tgt); } catch (std::out_of_range const&) { tgtIdx = this->tgt; }
     std::ostringstream ss;
     // Vertically aligned
     if (xgt == GapType::CENTRE && xst == SepType::EQ && xgap == 0) {
@@ -336,31 +336,31 @@ string SepPair::writeTglf(std::map<id_type, unsigned> id2ext, const SepMatrix &m
             switch(ygt) {
             case GapType::CENTRE:
                 if (ygap < 0) {
-                    ss << src << " " << tgt << " C N == " << nygapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " C N == " << nygapStr << "\n";
                 } else if (ygap > 0) {
-                    ss << src << " " << tgt << " C S == " << ygapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " C S == " << ygapStr << "\n";
                 } else {
                     throw std::runtime_error("Nodes and are constrained to coincide!");
                 }
                 break;
             case GapType::BDRY:
                 if (signbit(ygap)) {
-                    ss << src << " " << tgt << " B N == " << nygapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " B N == " << nygapStr << "\n";
                 } else {
-                    ss << src << " " << tgt << " B S == " << ygapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " B S == " << ygapStr << "\n";
                 }
                 break;
             }
             break;
         case SepType::INEQ:
             if (signbit(ygap)) {
-                ss << src << " " << tgt << " " << ygtStr << " N >= " << nygapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << ygtStr << " N >= " << nygapStr << "\n";
             } else {
-                ss << src << " " << tgt << " " << ygtStr << " S >= " << ygapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << ygtStr << " S >= " << ygapStr << "\n";
             }
             break;
         case SepType::NONE:
-            ss << src << " " << tgt << " C X == 0\n";
+            ss << srcIdx << " " << tgtIdx << " C X == 0\n";
             break;
         }
     }
@@ -371,31 +371,31 @@ string SepPair::writeTglf(std::map<id_type, unsigned> id2ext, const SepMatrix &m
             switch(xgt) {
             case GapType::CENTRE:
                 if (xgap < 0) {
-                    ss << src << " " << tgt << " C W == " << nxgapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " C W == " << nxgapStr << "\n";
                 } else if (xgap > 0) {
-                    ss << src << " " << tgt << " C E == " << xgapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " C E == " << xgapStr << "\n";
                 } else {
                     throw std::runtime_error("Nodes and are constrained to coincide!");
                 }
                 break;
             case GapType::BDRY:
                 if (signbit(xgap)) {
-                    ss << src << " " << tgt << " B W == " << nxgapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " B W == " << nxgapStr << "\n";
                 } else {
-                    ss << src << " " << tgt << " B E == " << xgapStr << "\n";
+                    ss << srcIdx << " " << tgtIdx << " B E == " << xgapStr << "\n";
                 }
                 break;
             }
             break;
         case SepType::INEQ:
             if (signbit(xgap)) {
-                ss << src << " " << tgt << " " << xgtStr << " W >= " << nxgapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << xgtStr << " W >= " << nxgapStr << "\n";
             } else {
-                ss << src << " " << tgt << " " << xgtStr << " E >= " << xgapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << xgtStr << " E >= " << xgapStr << "\n";
             }
             break;
         case SepType::NONE:
-            ss << src << " " << tgt << " C Y == 0\n";
+            ss << srcIdx << " " << tgtIdx << " C Y == 0\n";
             break;
         }
     }
@@ -404,17 +404,17 @@ string SepPair::writeTglf(std::map<id_type, unsigned> id2ext, const SepMatrix &m
         if (xst != SepType::NONE) {
             string reln = xst == SepType::EQ ? "==" : ">=";
             if (signbit(xgap)) {
-                ss << src << " " << tgt << " " << xgtStr << " L " << reln << " " << nxgapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << xgtStr << " L " << reln << " " << nxgapStr << "\n";
             } else {
-                ss << src << " " << tgt << " " << xgtStr << " R " << reln << " " << xgapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << xgtStr << " R " << reln << " " << xgapStr << "\n";
             }
         }
         if (yst != SepType::NONE) {
             string reln = yst == SepType::EQ ? "==" : ">=";
             if (signbit(ygap)) {
-                ss << src << " " << tgt << " " << ygtStr << " U " << reln << " " << nygapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << ygtStr << " U " << reln << " " << nygapStr << "\n";
             } else {
-                ss << src << " " << tgt << " " << ygtStr << " D " << reln << " " << ygapStr << "\n";
+                ss << srcIdx << " " << tgtIdx << " " << ygtStr << " D " << reln << " " << ygapStr << "\n";
             }
         }
     }

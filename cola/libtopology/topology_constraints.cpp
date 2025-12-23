@@ -148,12 +148,12 @@ struct transferStraightConstraintChoose {
      * @param target1 the first of two possible target segments for the transfer
      * @param target2 the second of two possible target segments for the
      * transfer
-     * @param ignore the constraint which, in being satisfied, caused this
+     * @param ignore_ the constraint which, in being satisfied, caused this
      * transfer and which should therefore not be transfered.
      */
     transferStraightConstraintChoose(Segment* target1, Segment* target2,
-            StraightConstraint* ignore)
-        : ignore(ignore) 
+            StraightConstraint* ignore_)
+        : ignore(ignore_) 
     {
         vpsc::Dim dim = ignore->scanDim;
         double min1=min(target1->start->pos(vpsc::conjugate(dim)),target1->end->pos(vpsc::conjugate(dim)));
@@ -284,7 +284,7 @@ toString() const {
     return s.str();
 }
 struct buildRoute {
-    buildRoute(straightener::Route* r, unsigned& n) : r(r), n(n) {}
+    buildRoute(straightener::Route* r_, unsigned& n_) : r(r_), n(n_) {}
     void operator() (const Segment* s) {
         EdgePoint* u=s->end;
         r->xs[n]=u->posX();

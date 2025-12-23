@@ -1693,14 +1693,14 @@ static bool posInlineWithConnEndSegs(const double pos, const size_t dim,
     return false;
 }
 
-ConnectorCrossings::ConnectorCrossings(Avoid::Polygon& poly, bool polyIsConn,
-        Avoid::Polygon& conn, ConnRef *polyConnRef, ConnRef *connConnRef)
-    : poly(poly),
-      polyIsConn(polyIsConn),
-      conn(conn),
+ConnectorCrossings::ConnectorCrossings(Avoid::Polygon& poly_, bool polyIsConn_,
+        Avoid::Polygon& conn_, ConnRef *polyConnRef_, ConnRef *connConnRef_)
+    : poly(poly_),
+      polyIsConn(polyIsConn_),
+      conn(conn_),
       checkForBranchingSegments(false),
-      polyConnRef(polyConnRef),
-      connConnRef(connConnRef),
+      polyConnRef(polyConnRef_),
+      connConnRef(connConnRef_),
       crossingPoints(nullptr),
       pointOrders(nullptr),
       sharedPaths(nullptr)

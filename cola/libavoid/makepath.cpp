@@ -1008,14 +1008,14 @@ void AStarPathPrivate::search(ConnRef *lineRef, VertInf *src, VertInf *tar, Vert
                 // another time since the current edge will be a dummy 
                 // zero-length edge.
                 VertInf *replacementTar = other;
-                for (EdgeInfList::const_iterator it = 
+                for (EdgeInfList::const_iterator it2 = 
                         replacementTar->orthogVisList.begin(); 
-                        it != replacementTar->orthogVisList.end(); ++it)
+                        it2 != replacementTar->orthogVisList.end(); ++it2)
                 {
-                    EdgeInf *edge = *it;
-                    VertInf *other = edge->otherVert(replacementTar);
-                    if ((other == tar) || 
-                            (other->point == tar->point))
+                    EdgeInf *edge2 = *it2;
+                    VertInf *other2 = edge2->otherVert(replacementTar);
+                    if ((other2 == tar) || 
+                            (other2->point == tar->point))
                     {
                         // Ignore edge we came from, or zero-length edges.
                         continue;
@@ -1024,7 +1024,7 @@ void AStarPathPrivate::search(ConnRef *lineRef, VertInf *src, VertInf *tar, Vert
                     // Determine possible target endpoint directions and 
                     // position.
                     determineEndPointLocation(dist, start, replacementTar,
-                            other, 2);
+                            other2, 2);
                 }
                 continue;
             }
@@ -1296,11 +1296,11 @@ void AStarPathPrivate::search(ConnRef *lineRef, VertInf *src, VertInf *tar, Vert
             // this ANode via.
             node.prevNode = bestNode;
 
-            VertInf *prevInf = (bestNode->prevNode) ?
+            VertInf *nodePrevInf = (bestNode->prevNode) ?
                     bestNode->prevNode->inf : nullptr;
 
             // Don't bother looking at the segment we just arrived along.
-            if (prevInf && (prevInf == node.inf))
+            if (nodePrevInf && (nodePrevInf == node.inf))
             {
                 continue;
             }
@@ -1468,9 +1468,9 @@ void AStarPathPrivate::search(ConnRef *lineRef, VertInf *src, VertInf *tar, Vert
 
     
             // Check to see if already on PENDING
-            std::list<ANode *>::const_iterator finish = node.inf->aStarPendingNodes.end();
+            std::list<ANode *>::const_iterator pendingFinish = node.inf->aStarPendingNodes.end();
             for (std::list<ANode *>::const_iterator currInd = 
-                    node.inf->aStarPendingNodes.begin(); currInd != finish; ++currInd)
+                    node.inf->aStarPendingNodes.begin(); currInd != pendingFinish; ++currInd)
             {
                 ati = **currInd;
                 // The (node.prevNode == ati.prevNode) is redundant, but may

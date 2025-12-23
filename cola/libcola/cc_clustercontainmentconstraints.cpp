@@ -38,13 +38,13 @@ static const int BelowBoundary = -1;
 class ClusterShapeOffsets : public SubConstraintInfo
 {
     public:
-        ClusterShapeOffsets(unsigned ind, vpsc::Dim dim, double offset, int boundarySide,
-                unsigned int boundaryVar) :
+        ClusterShapeOffsets(unsigned ind, vpsc::Dim dim_, double offset_, int boundarySide_,
+                unsigned int boundaryVar_) :
             SubConstraintInfo(ind),
-            offset(offset),
-            dim(dim),
-            boundarySide(boundarySide),
-            boundaryVar(boundaryVar)
+            offset(offset_),
+            dim(dim_),
+            boundarySide(boundarySide_),
+            boundaryVar(boundaryVar_)
         {
         }
         double offset;    // half the width or height value

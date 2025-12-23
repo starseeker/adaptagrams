@@ -441,10 +441,10 @@ class VarIndexPair : public SubConstraintInfo
 
 
 SeparationConstraint::SeparationConstraint(const vpsc::Dim dim, 
-        unsigned l, unsigned r, double g, bool equality)
+        unsigned l, unsigned r, double g, bool equality_)
     : CompoundConstraint(dim),
       gap(g), 
-      equality(equality),
+      equality(equality_),
       vpscConstraint(nullptr)
 {
     _subConstraintInfo.push_back(new VarIndexPair(l, r));
@@ -453,10 +453,10 @@ SeparationConstraint::SeparationConstraint(const vpsc::Dim dim,
 
 SeparationConstraint::SeparationConstraint(const vpsc::Dim dim, 
         AlignmentConstraint *l, AlignmentConstraint *r, double g, 
-        bool equality) 
+        bool equality_) 
     : CompoundConstraint(dim),
       gap(g),
-      equality(equality)
+      equality(equality_)
 {
     COLA_ASSERT(l);
     COLA_ASSERT(r);
@@ -585,12 +585,12 @@ unsigned SeparationConstraint::right(void) const
 }
 
 
-void SeparationConstraint::setSeparation(double gap) 
+void SeparationConstraint::setSeparation(double gap_) 
 {
-    this->gap = gap;
+    this->gap = gap_;
     if (vpscConstraint != nullptr) 
     {
-        vpscConstraint->gap = gap;
+        vpscConstraint->gap = gap_;
     }
 }
 
@@ -748,11 +748,11 @@ class AlignmentPair : public SubConstraintInfo
 
 
 MultiSeparationConstraint::MultiSeparationConstraint(const vpsc::Dim dim, 
-        double minSep, bool equality)
+        double minSep, bool equality_)
     : CompoundConstraint(dim),
       indicator(nullptr),
       sep(minSep), 
-      equality(equality)
+      equality(equality_)
 { 
 }
 
@@ -846,9 +846,9 @@ MultiSeparationConstraint::getCurrSubConstraintAlternatives(
 }
 
 
-void MultiSeparationConstraint::setSeparation(double sep) 
+void MultiSeparationConstraint::setSeparation(double sep_) 
 { 
-    this->sep = sep;
+    this->sep = sep_;
 }
 
 
@@ -909,9 +909,9 @@ void DistributionConstraint::generateVariables(const vpsc::Dim dim,
 }
 
 
-void DistributionConstraint::setSeparation(double sep) 
+void DistributionConstraint::setSeparation(double sep_) 
 {
-    this->sep = sep;
+    this->sep = sep_;
 }
 
 
@@ -1039,11 +1039,11 @@ void DistributionConstraint::generateSeparationConstraints(
 class RelativeOffset : public SubConstraintInfo
 {
     public:
-        RelativeOffset(unsigned indL, unsigned indR, vpsc::Dim dim,
+        RelativeOffset(unsigned indL, unsigned indR, vpsc::Dim dim_,
                 double offset)
             : SubConstraintInfo(indL),
               varIndex2(indR),
-              dim(dim),
+              dim(dim_),
               distOffset(offset)
         {
         }
@@ -1416,9 +1416,9 @@ void PageBoundaryConstraints::generateSeparationConstraints(
 
 struct GenerateVariables 
 {
-    GenerateVariables(const vpsc::Dim dim, vpsc::Variables& vars) 
-        : dim(dim),
-          vars(vars) 
+    GenerateVariables(const vpsc::Dim dim_, vpsc::Variables& vars_) 
+        : dim(dim_),
+          vars(vars_) 
     {
     }
     void operator() (CompoundConstraint *c) 
@@ -1433,12 +1433,12 @@ struct GenerateVariables
 
 struct GenerateSeparationConstraints 
 {
-    GenerateSeparationConstraints(const vpsc::Dim dim, vpsc::Variables& vars, 
-            vpsc::Constraints& cs, vpsc::Rectangles& bbs) 
-        : dim(dim),
-          vars(vars), 
-          cs(cs),
-          bbs(bbs)
+    GenerateSeparationConstraints(const vpsc::Dim dim_, vpsc::Variables& vars_, 
+            vpsc::Constraints& cs_, vpsc::Rectangles& bbs_) 
+        : dim(dim_),
+          vars(vars_), 
+          cs(cs_),
+          bbs(bbs_)
     {
     }
     void operator() (CompoundConstraint *c) 

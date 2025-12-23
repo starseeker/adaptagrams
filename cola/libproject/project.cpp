@@ -43,19 +43,19 @@ static int splits;
     splits = 0; \
 }
 #define ASSERT_COST_DECREASE(p) {    \
-    double c = (p)->cost();          \
-    /*printf("lastcost=%f, currcost=%f\n",lastCost,c);*/ \
-    LIBPROJECT_ASSERT(c<=lastCost+epsilon);  \
-    lastCost = c;                    \
+    double costCheck = (p)->cost();          \
+    /*printf("lastcost=%f, currcost=%f\n",lastCost,costCheck);*/ \
+    LIBPROJECT_ASSERT(costCheck<=lastCost+epsilon);  \
+    lastCost = costCheck;                    \
 }
 #define ASSERT_NONE_VIOLATED(p) { \
     for(Constraints::const_iterator i=(p)->cs.begin();i!=(p)->cs.end();i++) { \
-        Constraint *c=*i;                                                     \
-        double XIl = c->l->block->XI,                                         \
-               XIr = c->r->block->XI,                                         \
-               bl = c->l->b,                                                  \
-               br = c->r->b;                                                  \
-        double slack = XIr + br - XIl - bl - c->g;                            \
+        Constraint *constraint=*i;                                                     \
+        double XIl = constraint->l->block->XI,                                         \
+               XIr = constraint->r->block->XI,                                         \
+               bl = constraint->l->b,                                                  \
+               br = constraint->r->b;                                                  \
+        double slack = XIr + br - XIl - bl - constraint->g;                            \
         LIBPROJECT_ASSERT(slack>=-epsilon);                                   \
     }                                                                         \
 }
@@ -82,13 +82,13 @@ unsigned Variable::idCtr=0;
 double Variable::relativeInitialPos() const { return block->XI + b; }
 double Variable::relativeDesiredPos() const { return block->X + b; }
 
-Constraint::Constraint(Variable *l, Variable *r, const double g)
-    : l(l), r(r), g(g)
+Constraint::Constraint(Variable *l_, Variable *r_, const double g_)
+    : l(l_), r(r_), g(g_)
     , active(false) 
-    , lm(0)
+    , lm(0) 
 {
-    l->out.push_back(this);
-    r->in.push_back(this);
+    l_->out.push_back(this);
+    r_->in.push_back(this);
 }
 
 double Constraint::initialSlack() const {
@@ -158,11 +158,11 @@ void Block::computeLagrangians() {
 
 Project::
 Project(
-        vector<Variable*> const &vs, 
-        vector<Constraint *> const &cs) 
-    : vs(vs)
-    , cs(cs)
-    , inactive(cs.begin(),cs.end())
+        vector<Variable*> const &vs_, 
+        vector<Constraint *> const &cs_) 
+    : vs(vs_)
+    , cs(cs_)
+    , inactive(cs_.begin(),cs_.end())
     , externalAlphaCheck(nullptr)
 { 
     FILELog::ReportingLevel() = logERROR;
@@ -247,7 +247,7 @@ double Constraint::maxSafeAlpha() const {
  * current positions to desired positions without violating a constraint.
  */
 struct MaxSafeMove {
-    MaxSafeMove(Constraint *&c, double &alpha) : c(c), alpha(alpha) {}
+    MaxSafeMove(Constraint *&c_, double &alpha_) : c(c_), alpha(alpha_) {}
     /**
      * Compute the distance along the line from current to desired positions we would
      * need to move to make a given constraint tight.  If that distance is smaller than

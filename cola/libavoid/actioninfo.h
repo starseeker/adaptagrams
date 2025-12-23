@@ -69,7 +69,7 @@ class ActionInfo {
         ShapeRef *shape(void) const;
         ConnRef *conn(void) const;
         JunctionRef *junction(void) const;
-        void addConnEndUpdate(const unsigned int type, const ConnEnd& connEnd,
+        void addConnEndUpdate(const unsigned int updateType, const ConnEnd& connEnd,
                 bool isConnPinMoveUpdate);
         bool operator==(const ActionInfo& rhs) const;
         bool operator<(const ActionInfo& rhs) const;

@@ -1195,10 +1195,10 @@ void Graph::solidifyAlignedEdges(vpsc::Dim dim, const ColaOptions &opts) {
             // to setting the new constraints on src and the edgeNode, and on tgt and edgeNode.
             // Otherwise we will pass redundant equality constraints to VPSC, which will report
             // an unsatisfiability.
-            id_type sid = src->id(),
-                    tid = tgt->id(),
+            id_type srcId = src->id(),
+                    tgtId = tgt->id(),
                     eid = edgeNode->id();
-            m_sepMatrix.free(sid, tid);
+            m_sepMatrix.free(srcId, tgtId);
             // NB: Another very important implementation detail is that we use CENTRE gaps
             // here, not BDRY gaps. For if the user has set an extra boundary gap in the SepMatrix,
             // then the gaps will be made much larger than we want.
@@ -1208,8 +1208,8 @@ void Graph::solidifyAlignedEdges(vpsc::Dim dim, const ColaOptions &opts) {
             // used by the Graph's destress method. However there are other times when both vertical and
             // horizontal edges are used in conjunction, while projecting in both dimensions; for example,
             // this happens in the Graph's makeFeasible method.
-            m_sepMatrix.addSep(sid, eid, GapType::CENTRE, sd, SepType::INEQ, srcGap);
-            m_sepMatrix.addSep(eid, tid, GapType::CENTRE, sd, SepType::INEQ, tgtGap);
+            m_sepMatrix.addSep(srcId, eid, GapType::CENTRE, sd, SepType::INEQ, srcGap);
+            m_sepMatrix.addSep(eid, tgtId, GapType::CENTRE, sd, SepType::INEQ, tgtGap);
         }
     }
 }

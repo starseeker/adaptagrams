@@ -66,11 +66,11 @@ struct Nbr {
 
     //! @brief  Standard constructor.
     //!
-    //! @param[in]  id  a unique identifier; useful for associating an
+    //! @param[in]  id_  a unique identifier; useful for associating an
     //!             instance with the node it represents
     //! @param[in]  dx  x-displacement of this Nbr relative to central node
     //! @param[in]  dy  y-displacement of this Nbr relative to central node
-    Nbr(id_type id, double dx, double dy);
+    Nbr(id_type id_, double dx, double dy);
 
     //! @return  A code number from 0 to 7, indicating where this neighbour
     //!         lies relative to the central node:
@@ -103,7 +103,7 @@ struct Assignment {
     //! @param[in]  cost  the cost of this assignment, which measures the sum
     //!                   of angular displacements of Nbrs from their original
     //!                   positions
-    Assignment(const Nbrs &semis, double cost) : semis(semis), cost(cost) {}
+    Assignment(const Nbrs &semis_, double cost_) : semis(semis_), cost(cost_) {}
 
     //! @brief  Default constructor.
     //!
@@ -140,8 +140,8 @@ struct Quad {
 
     //! @brief  Standard constructor.
     //!
-    //! @param[in]  num  The number of this quadrant in {0, 1, 2, 3}
-    Quad(unsigned int num);
+    //! @param[in]  num_  The number of this quadrant in {0, 1, 2, 3}
+    Quad(unsigned int num_);
 
     //! @brief  Add a neighbour.
     void addNbr(const Nbr_SP &nbr) { nbrs.push_back(nbr); }
@@ -182,8 +182,8 @@ struct Arrangement {
 
     //! @brief  Standard constructor.
     //!
-    //! @param[in]  nbrs  all the Nbrs of the (implied) centre node
-    Arrangement(Nbrs nbrs);
+    //! @param[in]  nbrs_  all the Nbrs of the (implied) centre node
+    Arrangement(Nbrs nbrs_);
 
     //! @brief  Get the "vacancy vector" for this Arrangement
     //!

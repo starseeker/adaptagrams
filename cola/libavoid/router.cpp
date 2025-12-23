@@ -1800,7 +1800,7 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
         }
 
         Point start = conn->m_route.ps[0];
-        Point end = conn->m_route.ps[conn->m_route.size() - 1];
+        Point endPt = conn->m_route.ps[conn->m_route.size() - 1];
 
         double conndist = conn->m_route_dist;
 
@@ -1830,8 +1830,8 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
                 offy = p1.y;
                 a = start.x;
                 b = start.y - offy;
-                c = end.x;
-                d = end.y - offy;
+                c = endPt.x;
+                d = endPt.y - offy;
 
                 min = std::min(p1.x, p2.x);
                 max = std::max(p1.x, p2.x);
@@ -1842,8 +1842,8 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
                 offy = p1.x;
                 a = start.y;
                 b = start.x - offy;
-                c = end.y;
-                d = end.x - offy;
+                c = endPt.y;
+                d = endPt.x - offy;
 
                 min = std::min(p1.y, p2.y);
                 max = std::max(p1.y, p2.y);
@@ -1853,7 +1853,7 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
                 // Need to do rotation
                 Point n_p2(p2.x - p1.x, p2.y - p1.y);
                 Point n_start(start.x - p1.x, start.y - p1.y);
-                Point n_end(end.x - p1.x, end.y - p1.y);
+                Point n_end(endPt.x - p1.x, endPt.y - p1.y);
                 //db_printf("n_p2:    (%.1f, %.1f)\n", n_p2.x, n_p2.y);
                 //db_printf("n_start: (%.1f, %.1f)\n", n_start.x, n_start.y);
                 //db_printf("n_end:   (%.1f, %.1f)\n", n_end.x, n_end.y);
@@ -1864,7 +1864,7 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
                 Point r_p1(0, 0);
                 Point r_p2 = n_p2;
                 start = n_start;
-                end = n_end;
+                endPt = n_end;
 
                 double cosv = cos(theta);
                 double sinv = sin(theta);
@@ -1873,11 +1873,11 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
                 r_p2.y = cosv * n_p2.y + sinv * n_p2.x;
                 start.x = cosv * n_start.x - sinv * n_start.y;
                 start.y = cosv * n_start.y + sinv * n_start.x;
-                end.x = cosv * n_end.x - sinv * n_end.y;
-                end.y = cosv * n_end.y + sinv * n_end.x;
+                endPt.x = cosv * n_end.x - sinv * n_end.y;
+                endPt.y = cosv * n_end.y + sinv * n_end.x;
                 //db_printf("r_p2:    (%.1f, %.1f)\n", r_p2.x, r_p2.y);
                 //db_printf("r_start: (%.1f, %.1f)\n", start.x, start.y);
-                //db_printf("r_end:   (%.1f, %.1f)\n", end.x, end.y);
+                //db_printf("r_end:   (%.1f, %.1f)\n", endPt.x, endPt.y);
 
                 // This might be slightly off.
                 if (fabs(r_p2.y) > 0.0001)
@@ -1889,8 +1889,8 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
                 offy = r_p1.y;
                 a = start.x;
                 b = start.y - offy;
-                c = end.x;
-                d = end.y - offy;
+                c = endPt.x;
+                d = endPt.y - offy;
 
                 min = std::min(r_p1.x, r_p2.x);
                 max = std::max(r_p1.x, r_p2.x);
@@ -1945,7 +1945,7 @@ void Router::markPolylineConnectorsNeedingReroutingForDeletedObstacle(
             //db_printf("(%.1f, %.1f)\n", xp.x, xp.y);
 
             e1 = euclideanDist(start, xp);
-            e2 = euclideanDist(xp, end);
+            e2 = euclideanDist(xp, endPt);
             estdist = e1 + e2;
 
 
@@ -2595,10 +2595,10 @@ void Router::outputInstanceToSVG(std::string instanceName)
     fprintf(fp, "<g inkscape:groupmode=\"layer\" "
             "style=\"display: none;\" "
             "inkscape:label=\"IdealJunctions\">\n");
-    for (ObstacleList::iterator obstacleIt = m_obstacles.begin();
-            obstacleIt != m_obstacles.end(); ++obstacleIt)
+    for (ObstacleList::iterator juncIt = m_obstacles.begin();
+            juncIt != m_obstacles.end(); ++juncIt)
     {
-        JunctionRef *junction = dynamic_cast<JunctionRef *> (*obstacleIt);
+        JunctionRef *junction = dynamic_cast<JunctionRef *> (*juncIt);
         if (junction)
         {
             fprintf(fp, "<circle id=\"idealJunction-%u\" cx=\"%g\" cy=\"%g\" "
