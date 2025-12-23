@@ -63,6 +63,7 @@ add_cola_test(NAME rectclustershapecontainment SOURCES rectclustershapecontainme
 add_cola_test(NAME random_graph SOURCES random_graph.cpp)
 add_cola_test(NAME page_bounds SOURCES page_bounds.cpp)
 add_cola_test(NAME constrained SOURCES constrained.cpp)
+add_cola_test(NAME convex_hull SOURCES convex_hull.cpp)
 add_cola_test(NAME unsatisfiable SOURCES unsatisfiable.cpp) 
 add_cola_test(NAME invalid SOURCES invalid.cpp)
 add_cola_test(NAME makefeasible SOURCES makefeasible02.cpp)

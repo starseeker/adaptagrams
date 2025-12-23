@@ -59,12 +59,12 @@ public:
         }
 	}
 private:
-	void draw_cluster_boundary(SVGWriter &svg, 
+	void draw_cluster_boundary(cola::SVGWriter &svg, 
         cola::Cluster &c, const double xmin, const double ymin);
-	void draw_edges(SVGWriter &svg, 
+	void draw_edges(cola::SVGWriter &svg, 
         std::vector<straightener::Route*> const & es, 
         double const xmin, double const ymin);
-	void draw_curved_edges(SVGWriter &svg,
+	void draw_curved_edges(cola::SVGWriter &svg,
 		std::vector<cola::Edge> const & es, 
 		const double xmin, 
 		const double ymin);
