@@ -29,6 +29,8 @@
  */
 #include <valarray>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #include <libcola/convex_hull.h>
 #include <libcola/svg_writer.h>
 #include "graphlayouttest.h"
