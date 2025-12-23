@@ -312,12 +312,12 @@ ProjSeq_SP ExpansionGoal::tryExpansionRec(ProjSeq_SP ps0, std::deque<ExpansionGo
 }
 
 
-ContainedSegment::ContainedSegment(unsigned goalID, Avoid::Point basept, Avoid::Point localGoalPt, Avoid::Point globalGoalPt,
-                 double padding, TreePlacement_SP tp, vpsc::Dim sepDim)
-    : goalID(goalID), basept(basept), localGoalPt(localGoalPt), globalGoalPt(globalGoalPt),
-      padding(padding), tp(tp), sepDim(sepDim),
-      localGoalSeg(basept, localGoalPt),
-      globalGoalSeg(basept, globalGoalPt) {}
+ContainedSegment::ContainedSegment(unsigned goalID_, Avoid::Point basept_, Avoid::Point localGoalPt_, Avoid::Point globalGoalPt_,
+                 double padding_, TreePlacement_SP tp_, vpsc::Dim sepDim_)
+    : goalID(goalID_), basept(basept_), localGoalPt(localGoalPt_), globalGoalPt(globalGoalPt_),
+      padding(padding_), tp(tp_), sepDim(sepDim_),
+      localGoalSeg(basept_, localGoalPt_),
+      globalGoalSeg(basept_, globalGoalPt_) {}
 
 
 double ContainedSegment::measureShortage(void) const {

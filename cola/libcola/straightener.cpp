@@ -254,8 +254,8 @@ namespace straightener {
         Node *v;
         Edge *e;
         double pos;
-        Event(EventType t, Node *v, double p) : type(t),v(v),e(nullptr),pos(p) {};
-        Event(EventType t, Edge *e, double p) : type(t),v(nullptr),e(e),pos(p) {};
+        Event(EventType t, Node *v_, double p) : type(t),v(v_),e(nullptr),pos(p) {};
+        Event(EventType t, Edge *e_, double p) : type(t),v(nullptr),e(e_),pos(p) {};
     };
     /*
      * the following relation defines a strict weak ordering over events, i.e.:
@@ -487,8 +487,8 @@ namespace straightener {
                 // for each dummy node w in L:
                 //   if w left of v create constraints l<w, w<v    
                 //   if w right of v create constraints v<w, w<r
-                for(vector<Node*>::iterator i=L.begin();i!=L.end();i++) {
-                    Node* w=*i;
+                for(vector<Node*>::iterator it=L.begin();it!=L.end();it++) {
+                    Node* w=*it;
                     if(w->dummy) {
                         // node is on an edge
                         Edge *edge=w->edge;
@@ -533,10 +533,10 @@ namespace straightener {
 #ifdef STRAIGHTENER_DEBUG
                     printf("EdgeClose@%f,eid=%d,(u,v)=(%d,%d)\n", e->pos,e->e->id,e->e->startNode,e->e->endNode);
 #endif                    
-                    unsigned i=e->e->openInd;
+                    unsigned idx=e->e->openInd;
                     COLA_ASSERT(openEdges.size()>0);
-                    openEdges[i]=openEdges[openEdges.size()-1];
-                    openEdges[i]->openInd=i;
+                    openEdges[idx]=openEdges[openEdges.size()-1];
+                    openEdges[idx]->openInd=idx;
                     openEdges.resize(openEdges.size()-1);
                 }
             }
@@ -579,19 +579,19 @@ namespace straightener {
                 Node* first = new Node(nodes.size(),c->hullX[0],c->hullY[0]);
                 nodes.push_back(first);
                 Node* u = first;
-                unsigned i=1;
-                for(;i<c->hullX.size();i++) {
-                    Node* v = new Node(nodes.size(),c->hullX[i],c->hullY[i]);
+                unsigned hullIdx=1;
+                for(;hullIdx<c->hullX.size();hullIdx++) {
+                    Node* v = new Node(nodes.size(),c->hullX[hullIdx],c->hullY[hullIdx]);
                     nodes.push_back(v);
                     Edge* e = new Edge(edges.size(),u->id,v->id,
-                                c->hullX[i-1],c->hullY[i-1],c->hullX[i],c->hullY[i]);
+                                c->hullX[hullIdx-1],c->hullY[hullIdx-1],c->hullX[hullIdx],c->hullY[hullIdx]);
                     edges.push_back(e);
                     sc->boundary.push_back(e);
                     u=v;
                 }
                 edges.push_back(
                         new Edge(edges.size(),u->id,first->id,
-                            c->hullX[i-1],c->hullY[i-1],c->hullX[0],c->hullY[0]));
+                            c->hullX[hullIdx-1],c->hullY[hullIdx-1],c->hullX[0],c->hullY[0]));
             }
         }
     }
@@ -616,29 +616,29 @@ namespace straightener {
         }
     }
     Straightener::Straightener(
-            const double strength,
-            const vpsc::Dim dim,
-            std::vector<vpsc::Rectangle*> const & rs,
-            cola::FixedList const & fixed,
-            std::vector<Edge*> const & edges, 
-            vpsc::Variables const & vs,
-            vpsc::Variables & lvs,
-            vpsc::Constraints & lcs,
-            std::valarray<double> &oldCoords,
-            std::valarray<double> &oldG) 
-        : strength(strength),
-          dim(dim),
-          fixed(fixed),
-          edges(edges), 
-          vs(vs), 
-          lvs(lvs) 
+            const double strength_,
+            const vpsc::Dim dim_,
+            std::vector<vpsc::Rectangle*> const & rs_,
+            cola::FixedList const & fixed_,
+            std::vector<Edge*> const & edges_, 
+            vpsc::Variables const & vs_,
+            vpsc::Variables & lvs_,
+            vpsc::Constraints & lcs_,
+            std::valarray<double> &oldCoords_,
+            std::valarray<double> &oldG_) 
+        : strength(strength_),
+          dim(dim_),
+          fixed(fixed_),
+          edges(edges_), 
+          vs(vs_), 
+          lvs(lvs_) 
     {
-        unsigned n=rs.size();
+        unsigned n=rs_.size();
         for (unsigned i=0;i<n;i++) {
-            nodes.push_back(new straightener::Node(i,rs[i]));
+            nodes.push_back(new straightener::Node(i,rs_[i]));
         }
         vector<cola::SeparationConstraint*> cs;
-        straightener::generateConstraints(dim,nodes,edges,cs);
+        straightener::generateConstraints(dim,nodes,edges_,cs);
         // after generateConstraints we have new dummy nodes at the end of snodes and
         // constraints in cs
         //   need to create variables for dummy nodes in lvs and constraints in lcs
@@ -646,12 +646,12 @@ namespace straightener {
         g.resize(N);
         coords.resize(N);
         for(unsigned i=0;i<n;i++) {
-            g[i]=oldG[i];
-            coords[i]=oldCoords[i];
+            g[i]=oldG_[i];
+            coords[i]=oldCoords_[i];
         }
         for (unsigned i=n;i<N;i++) {
             double desiredPos = nodes[i]->pos[dim];
-            lvs.push_back(new vpsc::Variable(i,desiredPos,1));
+            lvs_.push_back(new vpsc::Variable(i,desiredPos,1));
             g[i]=0;
             coords[i]=desiredPos;
         }
@@ -659,12 +659,12 @@ namespace straightener {
             unsigned lv=(*i)->left();
             unsigned rv=(*i)->right();
             double gap=(*i)->gap;
-            vpsc::Variable* l = lv<n?vs[lv]:lvs[lv-n];
-            vpsc::Variable* r = rv<n?vs[rv]:lvs[rv-n];
-            lcs.push_back(new vpsc::Constraint(l,r,gap));
+            vpsc::Variable* l = lv<n?vs[lv]:lvs_[lv-n];
+            vpsc::Variable* r = rv<n?vs[rv]:lvs_[rv-n];
+            lcs_.push_back(new vpsc::Constraint(l,r,gap));
         }
-        for(unsigned i=0;i<edges.size();i++) {
-            edges[i]->nodePath(nodes,false);
+        for(unsigned i=0;i<edges_.size();i++) {
+            edges_[i]->nodePath(nodes,false);
         }
         for_each(cs.begin(),cs.end(),cola::delete_object());
     }
@@ -701,7 +701,7 @@ namespace straightener {
             }
         }
     }
-    double Straightener::computeStress(std::valarray<double> const &coords) {
+    double Straightener::computeStress(std::valarray<double> const &coords_) {
         double stress=0;
         for(unsigned i=0;i<edges.size();i++) {
             vector<unsigned>& path=edges[i]->path;
@@ -710,15 +710,15 @@ namespace straightener {
                 unsigned u=path[j-1], v=path[j];
                 double x1,x2,y1,y2;
                 if(dim==vpsc::HORIZONTAL) {
-                    x1=coords[u];
-                    x2=coords[v];
+                    x1=coords_[u];
+                    x2=coords_[v];
                     y1=nodes[u]->pos[1];
                     y2=nodes[v]->pos[1];
                 } else {
                     x1=nodes[u]->pos[0];
                     x2=nodes[v]->pos[0];
-                    y1=coords[u];
-                    y2=coords[v];
+                    y1=coords_[u];
+                    y2=coords_[v];
                 }
                 double dx=x1-x2, dy=y1-y2;
                 double dx2=dx*dx, dy2=dy*dy;
@@ -728,9 +728,9 @@ namespace straightener {
         }
         return strength*stress;
     }
-    double Straightener::computeStress2(std::valarray<double> const &coords)
+    double Straightener::computeStress2(std::valarray<double> const &coords_)
     {
-        COLA_UNUSED(coords);
+        COLA_UNUSED(coords_);
 
         double stress=0;
         for(unsigned i=0;i<edges.size();i++) {

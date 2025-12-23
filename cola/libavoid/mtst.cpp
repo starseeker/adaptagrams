@@ -73,12 +73,12 @@ struct delete_vertex
 };
 
 
-MinimumTerminalSpanningTree::MinimumTerminalSpanningTree(Router *router,
-        std::set<VertInf *> terminals, JunctionHyperedgeTreeNodeMap *hyperedgeTreeJunctions)
-    : router(router),
+MinimumTerminalSpanningTree::MinimumTerminalSpanningTree(Router *router_,
+        std::set<VertInf *> terminals_, JunctionHyperedgeTreeNodeMap *hyperedgeTreeJunctions_)
+    : router(router_),
       isOrthogonal(true),
-      terminals(terminals),
-      hyperedgeTreeJunctions(hyperedgeTreeJunctions),
+      terminals(terminals_),
+      hyperedgeTreeJunctions(hyperedgeTreeJunctions_),
       m_rootJunction(nullptr),
       bendPenalty(2000),
       dimensionChangeVertexID(0, 42)
@@ -285,14 +285,6 @@ void MinimumTerminalSpanningTree::constructSequential(void)
     // ============================================
     //
     TIMER_START(router, tmHyperedgeForest);
-
-    // Vertex heap for extended Dijkstra's algorithm.
-    std::vector<VertInf *> vHeap;
-    HeapCmpVertInf vHeapCompare;
-
-    // Bridging edge heap for the extended Kruskal's algorithm.
-    std::vector<EdgeInf *> beHeap;
-    CmpEdgeInf beHeapCompare;
 
 #ifdef DEBUGHANDLER
     if (router->debugHandler())

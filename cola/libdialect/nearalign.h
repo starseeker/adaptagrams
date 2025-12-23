@@ -108,11 +108,11 @@ double manhattan(Node_SP u, Node_SP v);
 struct PotentialAlignment {
 
     //! @brief  Standard Constructor.
-    PotentialAlignment(Node_SP u, Node_SP v, AlignmentFlag flag)
-        : u(u),
-          v(v),
-          flag(flag),
-          cost(manhattan(u, v)) {}
+    PotentialAlignment(Node_SP u_, Node_SP v_, AlignmentFlag flag_)
+        : u(u_),
+          v(v_),
+          flag(flag_),
+          cost(manhattan(u_, v_)) {}
 
     //! @brief  Remove from linked list.
     void remove(void);

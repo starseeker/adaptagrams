@@ -57,8 +57,8 @@ struct BoundingBox {
     //! @param[in]  X  Upper bound on x-coordinates of the box.
     //! @param[in]  y  Lower bound on y-coordinates of the box.
     //! @param[in]  Y  Upper bound on y-coordinates of the box.
-    BoundingBox(double x, double X, double y, double Y) :
-        x(x), X(X), y(y), Y(Y) {}
+    BoundingBox(double x_, double X_, double y_, double Y_) :
+        x(x_), X(X_), y(y_), Y(Y_) {}
 
     //! @brief  Default constructor.
     //!

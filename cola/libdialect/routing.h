@@ -65,13 +65,13 @@ struct RoutingAdapter {
     void addNodes(const NodesById &nodes);
 
     //! @brief  Add edges.
-    //! @param[in] edges  The Edges to be added, given by an EdgesById mapping.
+    //! @param[in] edges_  The Edges to be added, given by an EdgesById mapping.
     //! @param[in] connDirs  Optional specification of the allowed connection directions at the source and
     //!                      target ends of the Edges. Specifically, an Edge's ID should map to a pair
     //!                      (srcConnDirs, tgtConnDirs) giving the allowed directions for source and target
     //!                      respectively. For any Edge whose ID is not present in the mapping, all connection
     //!                      directions are allowed at both ends.
-    void addEdges(const EdgesById &edges, const EdgeConnDirsById *connDirs = nullptr);
+    void addEdges(const EdgesById &edges_, const EdgeConnDirsById *connDirs = nullptr);
 
     //! @brief  Do the routing.
     //! @param[in] processing  Set to the desired level of route processing. Default: routes are

@@ -61,13 +61,13 @@ void RoutingAdapter::addNodes(const NodesById &nodes) {
     }
 }
 
-void RoutingAdapter::addEdges(const EdgesById &edges, const EdgeConnDirsById *connDirs) {
+void RoutingAdapter::addEdges(const EdgesById &edges_, const EdgeConnDirsById *connDirs) {
     // We take advantage of the ordered nature of the maps.
-    auto it = edges.begin();
+    auto it = edges_.begin();
     if (connDirs != nullptr) {
         auto jt = connDirs->begin();
         // Before falling off the end of either map...
-        while (it != edges.end() && jt != connDirs->end()) {
+        while (it != edges_.end() && jt != connDirs->end()) {
             auto p = *it;
             auto q = *jt;
             // Record the Edge in the local lookup.
@@ -102,7 +102,7 @@ void RoutingAdapter::addEdges(const EdgesById &edges, const EdgeConnDirsById *co
     }
     // In case we fell off the end of the connDirs map first, then all remaining edges
     // take the default of ConnDirAll.
-    while (it != edges.end()) {
+    while (it != edges_.end()) {
         auto p = *it;
         // Record the Edge in the local lookup.
         this->edges.insert(p);
@@ -155,19 +155,19 @@ void RoutingAdapter::recordRoutes(bool refine) {
             refined_pts.push_back(pts[0]);
             // Now the sliding window:
             while (i + 1 < N) {
-                Point p = pts[i+1],
-                      q = pts[i+2];
-                double dx = q.x - p.x,
-                       dy = q.y - p.y;
+                Point pt1 = pts[i+1],
+                      pt2 = pts[i+2];
+                double dx = pt2.x - pt1.x,
+                       dy = pt2.y - pt1.y;
                 if (fabs(dx) < epsilon && fabs(dy) < epsilon) {
-                    // p and q are essentially coincident, so they add nothing to
+                    // pt1 and pt2 are essentially coincident, so they add nothing to
                     // the route, and we can skip them both.
                     // Advance the sliding window by 2.
                     i += 2;
                 } else {
-                    // p and q are actually distinct points, so we keep the first,
+                    // pt1 and pt2 are actually distinct points, so we keep the first,
                     // and advance the sliding window by 1.
-                    refined_pts.push_back(p);
+                    refined_pts.push_back(pt1);
                     ++i;
                 }
             }

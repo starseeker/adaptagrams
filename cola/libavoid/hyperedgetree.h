@@ -96,7 +96,7 @@ struct HyperedgeTreeNode
 struct HyperedgeTreeEdge
 {
     HyperedgeTreeEdge(HyperedgeTreeNode *node1, HyperedgeTreeNode *node2,
-            ConnRef *conn);
+            ConnRef *conn_);
 
     HyperedgeTreeNode *followFrom(HyperedgeTreeNode *from) const;
     bool zeroLength(void) const;

@@ -226,7 +226,7 @@ static double hRule8(vpsc::Dim dim, const EdgePoint* u, const EdgePoint* v,
  */
 struct SparseMapMap {
     cola::SparseMap &H;
-    SparseMapMap(cola::SparseMap &H) : H(H) {}
+    SparseMapMap(cola::SparseMap &H_) : H(H_) {}
     double& operator()(const EdgePoint *i, const EdgePoint* j) {
         return H(i->node->id,j->node->id);
     }
@@ -237,7 +237,7 @@ struct SparseMapMap {
 template <typename T>
 struct ArrayMap {
     valarray<T>& a;
-    ArrayMap(valarray<T>& a) : a(a) {}
+    ArrayMap(valarray<T>& a_) : a(a_) {}
     double& operator[](const EdgePoint *i) {
         return a[i->node->id];
     }
@@ -259,9 +259,9 @@ void TopologyConstraints::computeForces(valarray<double>& gradient,
         Edge* e=*i;
         ConstEdgePoints path;
         e->getPath(path);
-        unsigned n=path.size();
-        FILE_LOG(logDEBUG2) << "  path: n="<<n;
-        COLA_ASSERT(n>=2);
+        unsigned pathSize=path.size();
+        FILE_LOG(logDEBUG2) << "  path: n="<<pathSize;
+        COLA_ASSERT(pathSize>=2);
         double d=e->idealLength;
 
         double weight=2.0/(d*d);
@@ -277,7 +277,7 @@ void TopologyConstraints::computeForces(valarray<double>& gradient,
         H(u,u)+=h;
         double g1=weight*dl*gRule1(dim,u,v);
         g[u]-=g1;
-        if(n==2||dl>0) {
+        if(pathSize==2||dl>0) {
             // rule 1
             H(v,v)+=h;
             g[v]+=g1; 
@@ -285,11 +285,11 @@ void TopologyConstraints::computeForces(valarray<double>& gradient,
             H(v,u)-=h;
             continue;
         }
-        u=path[n-2]; v=path[n-1];
+        u=path[pathSize-2]; v=path[pathSize-1];
         g[v]+=weight*dl*gRule1(dim,u,v);
         H(v,v)+=weight*hRuleD1(dim,u,v,dl);
         // remaining diagonal entries
-        for(unsigned j=1;j<n-1;j++) {
+        for(unsigned j=1;j<pathSize-1;j++) {
             u=path[j-1], v=path[j], w=path[j+1];
             COLA_ASSERT(v->inSegment->length()>0);
             COLA_ASSERT(w->inSegment->length()>0);

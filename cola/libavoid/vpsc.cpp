@@ -58,11 +58,11 @@ static const double ZERO_UPPERBOUND=-1e-10;
 static const double LAGRANGIAN_TOLERANCE=-1e-4;
 
 
-IncSolver::IncSolver(Variables const &vs, Constraints const &cs)
-    : m(cs.size()),
-      cs(cs),
-      n(vs.size()), 
-      vs(vs),
+IncSolver::IncSolver(Variables const &vs_, Constraints const &cs_)
+    : m(cs_.size()),
+      cs(cs_),
+      n(vs_.size()), 
+      vs(vs_),
       needsScaling(false)
 {
     for(unsigned i=0;i<n;++i) {
@@ -134,13 +134,13 @@ struct node {
     set<node*> out;
 };
 // useful in debugging - cycles would be BAD
-bool IncSolver::constraintGraphIsCyclic(const unsigned n, Variable* const vs[]) {
+bool IncSolver::constraintGraphIsCyclic(const unsigned n_, Variable* const vs_[]) {
     map<Variable*, node*> varmap;
     vector<node*> graph;
-    for(unsigned i=0;i<n;i++) {
+    for(unsigned i=0;i<n_;i++) {
         node *u=new node;
         graph.push_back(u);
-        varmap[vs[i]]=u;
+        varmap[vs_[i]]=u;
     }
     for(unsigned i=0;i<n;i++) {
         for(vector<Constraint*>::iterator c=vs[i]->in.begin();c!=vs[i]->in.end();++c) {
@@ -398,10 +398,10 @@ void IncSolver::splitBlocks() {
             f<<"    found split point: "<<*v<<" lm="<<v->lm<<endl;
 #endif
             splitCnt++;
-            Block *b = v->left->block, *l=nullptr, *r=nullptr;
+            Block *bl = v->left->block, *l=nullptr, *r=nullptr;
             COLA_ASSERT(v->left->block == v->right->block);
-            //double pos = b->posn;
-            b->split(l,r,v);
+            //double pos = bl->posn;
+            bl->split(l,r,v);
             //l->posn=r->posn=pos;
             //l->wposn = l->posn * l->weight;
             //r->wposn = r->posn * r->weight;
@@ -488,11 +488,11 @@ using std::copy;
 #define __NOTNAN(p) (p)==(p)
 
 
-Blocks::Blocks(vector<Variable*> const &vs) : vs(vs),nvs(vs.size()) {
+Blocks::Blocks(vector<Variable*> const &vs_) : vs(vs_),nvs(vs_.size()) {
     blockTimeCtr=0;
     m_blocks.resize(nvs);
     for(size_t i=0;i<nvs;i++) {
-        m_blocks[i] = new Block(this, vs[i]);
+        m_blocks[i] = new Block(this, vs_[i]);
     }
 }
 Blocks::~Blocks(void)
@@ -718,7 +718,7 @@ void Block::addVariable(Variable* v) {
 #endif
 */
 }
-Block::Block(Blocks *blocks, Variable* const v)
+Block::Block(Blocks *blocks_, Variable* const v)
     : vars(new vector<Variable*>)
     , posn(0)
     //, weight(0)
@@ -727,7 +727,7 @@ Block::Block(Blocks *blocks, Variable* const v)
     , timeStamp(0)
     , in(nullptr)
     , out(nullptr)
-    , blocks(blocks)
+    , blocks(blocks_)
 {
     if(v!=nullptr) {
         v->offset=0;
@@ -761,17 +761,17 @@ void Block::setUpInConstraints() {
 void Block::setUpOutConstraints() {
     setUpConstraintHeap(out,false);
 }
-void Block::setUpConstraintHeap(Heap* &h,bool in) {
+void Block::setUpConstraintHeap(Heap* &h,bool isIncoming) {
     delete h;
     h = new Heap();
     for (Vit i=vars->begin();i!=vars->end();++i) {
         Variable *v=*i;
-        vector<Constraint*> *cs=in?&(v->in):&(v->out);
+        vector<Constraint*> *cs=isIncoming?&(v->in):&(v->out);
         for (Cit j=cs->begin();j!=cs->end();++j) {
             Constraint *c=*j;
             c->timeStamp=blocks->blockTimeCtr;
-            if ( ((c->left->block != this) && in) || 
-                 ((c->right->block != this) && !in) )
+            if ( ((c->left->block != this) && isIncoming) || 
+                 ((c->right->block != this) && !isIncoming) )
             {
                 h->push(c);
             }
@@ -1290,13 +1290,13 @@ ostream& operator <<(ostream &os, const Block& b)
     return os;
 }
 
-Constraint::Constraint(Variable *left, Variable *right, double gap, bool equality)
-: left(left),
-  right(right),
-  gap(gap),
+Constraint::Constraint(Variable *left_, Variable *right_, double gap_, bool equality_)
+: left(left_),
+  right(right_),
+  gap(gap_),
   timeStamp(0),
   active(false),
-  equality(equality),
+  equality(equality_),
   unsatisfiable(false),
   needsScaling(true),
   creator(nullptr)

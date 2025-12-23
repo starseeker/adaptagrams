@@ -1763,20 +1763,20 @@ extern void generateStaticOrthogonalVisGraph(Router *router)
     if (router->debugHandler())
     {
         std::vector<Box> obstacleBoxes;
-        ObstacleList::iterator obstacleIt = router->m_obstacles.begin();
+        ObstacleList::iterator obsIt = router->m_obstacles.begin();
         for (unsigned i = 0; i < n; i++)
         {
-            Obstacle *obstacle = *obstacleIt;
+            Obstacle *obstacle = *obsIt;
             JunctionRef *junction = dynamic_cast<JunctionRef *> (obstacle);
             if (junction && ! junction->positionFixed())
             {
                 // Junctions that are free to move are not treated as obstacles.
-                ++obstacleIt;
+                ++obsIt;
                 continue;
             }
             Box bbox = obstacle->routingBox();
             obstacleBoxes.push_back(bbox);
-            ++obstacleIt;
+            ++obsIt;
         }
         router->debugHandler()->updateObstacleBoxes(obstacleBoxes);
     }
@@ -2461,11 +2461,11 @@ typedef std::list<ShiftSegment *> ShiftSegmentPtrList;
 class PotentialSegmentConstraint
 {
     public:
-        PotentialSegmentConstraint(size_t index1, size_t index2,
-                const Variables& vs)
-            : index1(index1),
-              index2(index2),
-              vs(vs)
+        PotentialSegmentConstraint(size_t index1_, size_t index2_,
+                const Variables& vs_)
+            : index1(index1_),
+              index2(index2_),
+              vs(vs_)
         {
         }
 

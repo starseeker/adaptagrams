@@ -148,8 +148,8 @@ typedef std::vector<BendSequence_SP> BendSequences;
 //! @brief A bend point deliberately added to a connector route, for aesthetic reasons.
 struct AestheticBend {
 
-    AestheticBend(Edge_SP edge, Node_SP bendNode, Node_SP nbrNode1, Node_SP nbrNode2)
-        : edge(edge), bendNode(bendNode), nbrNode1(nbrNode1), nbrNode2(nbrNode2) {}
+    AestheticBend(Edge_SP edge_, Node_SP bendNode_, Node_SP nbrNode1_, Node_SP nbrNode2_)
+        : edge(edge_), bendNode(bendNode_), nbrNode1(nbrNode1_), nbrNode2(nbrNode2_) {}
 
     //! @brief  Add the bend node to the edge.
     void addBendToEdge(void);

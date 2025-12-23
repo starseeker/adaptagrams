@@ -189,8 +189,8 @@ namespace topology {
             Nodes& nodes,
             Edges& edges,
             cola::RootCluster* clusterHierarchy,
-            vpsc::Variables& vs,
-            vpsc::Constraints& cs);
+            vpsc::Variables& vs_,
+            vpsc::Constraints& cs_);
         ~TopologyConstraints();
         bool solve();
         void constraints(std::vector<TopologyConstraint*> & ts) const;

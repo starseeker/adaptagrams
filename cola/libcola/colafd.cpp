@@ -97,13 +97,13 @@ void dumpSquareMatrix(unsigned n, T** L) {
 ConstrainedFDLayout::ConstrainedFDLayout(const vpsc::Rectangles& rs,
         const std::vector< Edge >& es, const double idealLength,
         const EdgeLengths& eLengths,
-        TestConvergence *doneTest, PreIteration* preIteration)
+        TestConvergence *doneTest, PreIteration* preIteration_)
     : n(rs.size()),
       X(valarray<double>(n)),
       Y(valarray<double>(n)),
       done(doneTest),
       using_default_done(false),
-      preIteration(preIteration),
+      preIteration(preIteration_),
       topologyAddon(new TopologyAddonInterface()),
       rungekutta(true),
       desiredPositions(nullptr),
@@ -137,9 +137,9 @@ ConstrainedFDLayout::ConstrainedFDLayout(const vpsc::Rectangles& rs,
     }
     D=new double*[n];
     G=new unsigned short*[n];
-    for(unsigned i=0;i<n;i++) {
-        D[i]=new double[n];
-        G[i]=new unsigned short[n];
+    for(unsigned j=0;j<n;j++) {
+        D[j]=new double[n];
+        G[j]=new unsigned short[n];
     }
 
     computePathLengths(es,m_edge_lengths);
@@ -187,9 +187,9 @@ void dijkstra(const unsigned s, const unsigned n, double* d,
     shortest_paths::dijkstra(s,n,d,es,eLengths);
 }
 
-void ConstrainedFDLayout::setConstraints(const cola::CompoundConstraints& ccs)
+void ConstrainedFDLayout::setConstraints(const cola::CompoundConstraints& ccs_)
 {
-    this->ccs = ccs;
+    this->ccs = ccs_;
 }
 
 void ConstrainedFDLayout::setAvoidNodeOverlaps(bool avoidOverlaps,
@@ -204,9 +204,9 @@ void ConstrainedFDLayout::setUseNeighbourStress(bool useNeighbourStress)
     m_useNeighbourStress = useNeighbourStress;
 }
 
-void ConstrainedFDLayout::setDesiredPositions(DesiredPositions *desiredPositions)
+void ConstrainedFDLayout::setDesiredPositions(DesiredPositions *desiredPositions_)
 {
-    this->desiredPositions = desiredPositions;
+    this->desiredPositions = desiredPositions_;
 }
 
 
@@ -429,7 +429,7 @@ void ConstrainedFDLayout::recGenerateClusterVariablesAndConstraints(
 
     if ( (noc == nullptr) && (dynamic_cast<RootCluster *> (cluster) == nullptr) )
     {
-        double freeWeight = 0.00000000001;
+        double clusterFreeWeight = 0.00000000001;
         // Then create left and right variables for the boundary of this
         // cluster.
         vpsc::Variable *variable = nullptr;
@@ -437,19 +437,19 @@ void ConstrainedFDLayout::recGenerateClusterVariablesAndConstraints(
         COLA_ASSERT(vars[XDIM].size() == vars[YDIM].size());
         // Left:
         variable = new vpsc::Variable(vars[XDIM].size(),
-                cluster->bounds.getMinX(), freeWeight);
+                cluster->bounds.getMinX(), clusterFreeWeight);
         vars[XDIM].push_back(variable);
         // Right:
         variable = new vpsc::Variable(vars[XDIM].size(),
-                cluster->bounds.getMaxX(), freeWeight);
+                cluster->bounds.getMaxX(), clusterFreeWeight);
         vars[XDIM].push_back(variable);
         // Bottom::
         variable = new vpsc::Variable(vars[YDIM].size(),
-                cluster->bounds.getMinY(), freeWeight);
+                cluster->bounds.getMinY(), clusterFreeWeight);
         vars[YDIM].push_back(variable);
         // Top:
         variable = new vpsc::Variable(vars[YDIM].size(),
-                cluster->bounds.getMaxY(), freeWeight);
+                cluster->bounds.getMaxY(), clusterFreeWeight);
         vars[YDIM].push_back(variable);
 
         RectangularCluster *rc = dynamic_cast<RectangularCluster *> (cluster);
@@ -500,9 +500,9 @@ void ConstrainedFDLayout::recGenerateClusterVariablesAndConstraints(
         for (std::set<Cluster*>::iterator curr = expandedClusterSet.begin();
                 curr != expandedClusterSet.end(); ++curr)
         {
-            Cluster *cluster = *curr;
+            Cluster *currCluster = *curr;
             RectangularCluster *rectCluster =
-                    dynamic_cast<RectangularCluster *> (cluster);
+                    dynamic_cast<RectangularCluster *> (currCluster);
             if (rectCluster && rectCluster->clusterIsFromFixedRectangle())
             {
                 // Treat it like a shape for non-overlap.
@@ -1197,7 +1197,7 @@ double ConstrainedFDLayout::applyDescentVector(
 
 
 // Computes X and Y offsets for nodes that are at the same position.
-std::vector<double> ConstrainedFDLayout::offsetDir(double minD)
+std::vector<double> ConstrainedFDLayout::offsetDir(double minDist)
 {
     std::vector<double> u(2);
     double l = 0;
@@ -1210,7 +1210,7 @@ std::vector<double> ConstrainedFDLayout::offsetDir(double minD)
 
     for (size_t i = 0; i < 2; ++i)
     {
-        u[i] *= (minD / l);
+        u[i] *= (minDist / l);
     }
 
     return u;
@@ -1515,15 +1515,15 @@ void ConstrainedFDLayout::outputInstanceToSVG(std::string instanceName)
             "inkscape:label=\"Rects\">\n");
     for (size_t i = 0; i < boundingBoxes.size(); ++i)
     {
-        double minX = boundingBoxes[i]->getMinX();
-        double maxX = boundingBoxes[i]->getMaxX();
-        double minY = boundingBoxes[i]->getMinY();
-        double maxY = boundingBoxes[i]->getMaxY();
+        double rectMinX = boundingBoxes[i]->getMinX();
+        double rectMaxX = boundingBoxes[i]->getMaxX();
+        double rectMinY = boundingBoxes[i]->getMinY();
+        double rectMaxY = boundingBoxes[i]->getMaxY();
 
         fprintf(fp, "<rect id=\"rect-%u\" x=\"%g\" y=\"%g\" width=\"%g\" "
                 "height=\"%g\" style=\"stroke-width: 1px; stroke: black; "
                 "fill: blue; fill-opacity: 0.3;\" />\n",
-                (unsigned) i, minX, minY, maxX - minX, maxY - minY);
+                (unsigned) i, rectMinX, rectMinY, rectMaxX - rectMinX, rectMaxY - rectMinY);
     }
     fprintf(fp, "</g>\n");
 

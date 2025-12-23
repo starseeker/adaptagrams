@@ -40,7 +40,7 @@
 
 namespace cola {
 struct SparseMap {
-    SparseMap(unsigned n = 0) : n(n) {};
+    SparseMap(unsigned n_ = 0) : n(n_) {};
     unsigned n;
     typedef std::pair<unsigned, unsigned> SparseIndex;
     typedef std::map<SparseIndex,double> SparseLookup;
@@ -64,8 +64,8 @@ struct SparseMap {
     size_t nonZeroCount() const {
         return lookup.size();
     }
-    void resize(unsigned n) {
-        this->n = n;
+    void resize(unsigned n_) {
+        this->n = n_;
     }
     void clear() {
         lookup.clear();

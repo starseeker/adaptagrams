@@ -37,7 +37,7 @@ namespace cola {
 namespace straightener {
 
 struct Route {
-    Route(unsigned n) : n(n), xs(new double[n]), ys(new double[n]) {}
+    Route(unsigned n_) : n(n_), xs(new double[n_]), ys(new double[n_]) {}
     ~Route() {
         delete [] xs;
         delete [] ys;
@@ -78,8 +78,8 @@ struct DebugPoint {
     double x,y;
 };
 struct DebugLine {
-    DebugLine(double x0,double y0,double x1,double y1,unsigned colour) 
-        : x0(x0),y0(y0),x1(x1),y1(y1),colour(colour) {}
+    DebugLine(double x0_,double y0_,double x1_,double y1_,unsigned colour_) 
+        : x0(x0_),y0(y0_),x1(x1_),y1(y1_),colour(colour_) {}
     double x0,y0,x1,y1;
     unsigned colour;
 };
@@ -92,7 +92,7 @@ public:
     double getMax(vpsc::Dim d) const {
         return max[d];
     }
-    ScanObject(unsigned id) : id(id) {}
+    ScanObject(unsigned id_) : id(id_) {}
 protected:
     double min[2], max[2];
 };
@@ -122,15 +122,15 @@ public:
         updateBoundingBox();
     }
     // Edge with a non-trivial route
-    Edge(unsigned id, unsigned start, unsigned end, Route* route)
-    : ScanObject(id), startNode(start), endNode(end), route(route)
+    Edge(unsigned id_, unsigned start, unsigned end, Route* route_)
+    : ScanObject(id_), startNode(start), endNode(end), route(route_)
     {
         updateBoundingBox();
     }
     // Edge with a trivial route
-    Edge(unsigned id, unsigned start, unsigned end,
+    Edge(unsigned id_, unsigned start, unsigned end,
             double x1, double y1, double x2, double y2) 
-    : ScanObject(id), startNode(start), endNode(end) {
+    : ScanObject(id_), startNode(start), endNode(end) {
         route = new Route(2);
         route->xs[0]=x1; route->ys[0]=y1;
         route->xs[1]=x2; route->ys[1]=y2;
@@ -254,8 +254,8 @@ public:
                  // a violated constraint
     bool open; // a node is opened (if scan is true) when the scanline first reaches
                // its boundary and closed when the scanline leaves it.
-    Node(unsigned id, vpsc::Rectangle const * r) :
-        ScanObject(id),cluster(nullptr),
+    Node(unsigned id_, vpsc::Rectangle const * r) :
+        ScanObject(id_),cluster(nullptr),
         edge(nullptr),dummy(false),scan(true),active(true),open(false) { 
             for(unsigned i=0;i<2;i++) {
                 pos[i]=r->getCentreD(i);
@@ -264,8 +264,8 @@ public:
                 length[i]=r->length(i);
             }
     }
-    Node(unsigned id, const double x, const double y) :
-        ScanObject(id),cluster(nullptr),
+    Node(unsigned id_, const double x, const double y) :
+        ScanObject(id_),cluster(nullptr),
         edge(nullptr),dummy(false),scan(false),active(true),open(false) {
             pos[vpsc::HORIZONTAL]=x;
             pos[vpsc::VERTICAL]=y;
@@ -285,8 +285,8 @@ private:
     friend void sortNeighbours(const vpsc::Dim dim, Node * v, Node * l, Node * r, 
         const double conjpos, std::vector<Edge*> const & openEdges, 
         std::vector<Node *>& L, std::vector<Node *>& nodes);
-    Node(const unsigned id, const double x, const double y, Edge* e) : 
-        ScanObject(id),cluster(nullptr),
+    Node(const unsigned id_, const double x, const double y, Edge* e) : 
+        ScanObject(id_),cluster(nullptr),
         edge(e),dummy(true),scan(false),active(false)  {
             pos[vpsc::HORIZONTAL]=x;
             pos[vpsc::VERTICAL]=y;
@@ -327,17 +327,17 @@ typedef std::set<Node*,CmpNodePos> NodeSet;
 // such that b is placed at u+t(v-u).
 struct LinearConstraint {
     LinearConstraint(
-            Node const & u, 
-            Node const & v,
-            Node const & b,
-            double w)
-        : u(u.id),v(v.id),b(b.id),w(w)
+            Node const & u_, 
+            Node const & v_,
+            Node const & b_,
+            double w_)
+        : u(u_.id),v(v_.id),b(b_.id),w(w_)
     {
         // from cosine rule: ub.uv/|uv|=|ub|cos(theta)
-        double uvx = v.pos[0] - u.pos[0],
-               uvy = v.pos[1] - u.pos[1],
-               ubx = b.pos[0] - u.pos[0],
-               uby = b.pos[1] - u.pos[1],
+        double uvx = v_.pos[0] - u_.pos[0],
+               uvy = v_.pos[1] - u_.pos[1],
+               ubx = b_.pos[0] - u_.pos[0],
+               uby = b_.pos[1] - u_.pos[1],
                duv2 = uvx * uvx + uvy * uvy;
         if(duv2 < 0.0001) {
             t=0;

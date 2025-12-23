@@ -56,8 +56,8 @@ public:
     //!                      variables by.
     //! @param[in] equality  Whether the separation is an exact distance or
     //!                      not.  The default is false.
-	Constraint(Variable *left, Variable *right, double gap, 
-            bool equality = false);
+	Constraint(Variable *left_, Variable *right_, double gap_, 
+            bool equality_ = false);
 	~Constraint();
 
     /**

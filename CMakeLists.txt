@@ -134,6 +134,7 @@ check_cxx_flag(TGT_COMPILE_FLAGS "-Wpointer-arith")
 check_cxx_flag(TGT_COMPILE_FLAGS "-Wcast-align")
 check_cxx_flag(TGT_COMPILE_FLAGS "-Wsign-compare")
 check_cxx_flag(TGT_COMPILE_FLAGS "-Woverloaded-virtual")
+check_cxx_flag(TGT_COMPILE_FLAGS "-Wshadow")
 check_cxx_flag(TGT_COMPILE_FLAGS "-Wswitch")
 
 # Header files
