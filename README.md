@@ -140,6 +140,10 @@ Bindings for use of the Adaptagrams libraries can be generated using [SWIG][swig
 
 [cola.js][webcola] (a.k.a. WebCola) is a JavaScript based rewrite of libcola which works well with [D3.js][d3]
 
+## Note on Experimental Code
+
+The `experimental` directory contains experimental code that is not built by default. Some of this code (e.g., `experimental/draw-bn`) still uses Cairo and Pango for advanced text rendering features. These experimental programs are not part of the main Adaptagrams libraries and are not required for normal usage.
+
 [d3]: http://d3js.org/
 [webcola]: http://ialab.it.monash.edu/webcola/
 [swig]: http://www.swig.org/

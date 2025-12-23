@@ -49,13 +49,7 @@ fi
 # Distribute the changed linker flags among the Makefiles
 AC_SUBST(AM_LDFLAGS)
 
-#AC_CHECK_LIB(cairomm-1.0,cairo_create)
-PKG_CHECK_MODULES(CAIROMM,cairomm-1.0,cairomm=yes,cairomm=no)
-if test "x$cairomm" = "xyes"; then
-	AC_DEFINE(HAVE_CAIROMM, 1, [Enable CairoMM code])
-fi
-AC_SUBST(CAIROMM_CFLAGS)
-AC_SUBST(CAIROMM_LIBS)
+# Cairo is no longer required - SVG output is now self-contained
 
 AH_BOTTOM([ 
   
