@@ -42,8 +42,8 @@ jobs:
         # Combines your configuration and build logic for the agent to follow
         shell: pwsh
         run: |
-          cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER="cl.exe" -DCMAKE_CXX_COMPILER="cl.exe" -DSC_ENABLE_TESTING=ON
-          cmake --build build --parallel 1 --verbose
+          cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER="cl.exe" -DCMAKE_CXX_COMPILER="cl.exe" -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF
+          cmake --build build --parallel 4 --verbose
 
       - name: Test
         # Tells the agent how to verify its own code changes
