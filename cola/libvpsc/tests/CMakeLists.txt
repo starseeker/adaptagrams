@@ -43,5 +43,6 @@ endfunction()
 add_vpsc_test(NAME satisfy_inc SOURCES satisfy_inc.cpp)
 add_vpsc_test(NAME block SOURCES block.cpp)
 add_vpsc_test(NAME rectangleoverlap SOURCES rectangleoverlap.cpp)
+add_vpsc_test(NAME vpsc_validate SOURCES vpsc_validate.cpp)
 
 

@@ -120,5 +120,6 @@ add_avoid_test(NAME junction01 SOURCES junction01.cpp )
 add_avoid_test(NAME junction02 SOURCES junction02.cpp )
 add_avoid_test(NAME junction03 SOURCES junction03.cpp )
 add_avoid_test(NAME junction04 SOURCES junction04.cpp )
+add_avoid_test(NAME avoid_validate SOURCES avoid_validate.cpp )
 
 
