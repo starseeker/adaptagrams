@@ -1,0 +1,53 @@
+# .github/workflows/copilot-setup-steps.yml
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # This job ID is MANDATORY for the agent to pick up the file
+  copilot-setup-steps:
+    runs-on: windows-latest
+    steps:
+      - name: Setup MSVC Environment
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $vsPath) { throw "Could not find Visual Studio installation via vswhere.exe" }
+          $vcvars = Join-Path $vsPath "VC\Auxiliary\Build\vcvars64.bat"
+          if (-not (Test-Path $vcvars)) { throw "Could not find vcvars64.bat at: $vcvars" }
+          $envVars = cmd /c "`"$vcvars`" > nul 2>&1 && set" 2>&1
+          if ($LASTEXITCODE -ne 0) { throw "vcvars64.bat failed with exit code $LASTEXITCODE" }
+          foreach ($line in $envVars) {
+            if ($line -match "^([^=]+)=(.*)$") {
+              $key = $matches[1]
+              $value = $matches[2]
+              if ($key -eq "Path" -or $key -eq "PATH") {
+                foreach ($p in $value.Split(";")) {
+                  if ($p.Trim()) {
+                    $p.Trim() | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
+                  }
+                }
+              } else {
+                "$key=$value" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
+              }
+            }
+          }
+
+      - name: Configure and Build
+        # Combines your configuration and build logic for the agent to follow
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER="cl.exe" -DCMAKE_CXX_COMPILER="cl.exe" -DSC_ENABLE_TESTING=ON
+          cmake --build build --parallel 1 --verbose
+
+      - name: Test
+        # Tells the agent how to verify its own code changes
+        shell: pwsh
+        run: |
+          cd build
+          ctest -j 1 --output-on-failure
