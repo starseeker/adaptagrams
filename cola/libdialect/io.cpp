@@ -27,7 +27,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <sys/stat.h>
 #include <stdexcept>
 
 #include "libvpsc/assertions.h"
@@ -145,12 +144,11 @@ Graph_SP dialect::buildGraphFromTglf(istream &in) {
 }
 
 Graph_SP dialect::buildGraphFromTglfFile(const string &filepath) {
-    struct stat buf;
-    if (stat(filepath.c_str(), &buf) == -1) {
+    ifstream infile(filepath);
+    if (!infile.is_open()) {
         const std::string msg = "File does not exist: " + filepath;
         throw std::runtime_error(msg);
     }
-    ifstream infile(filepath);
     return buildGraphFromTglf(infile);
 }
 
