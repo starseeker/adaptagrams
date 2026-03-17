@@ -1,5 +1,5 @@
 function(adaptagrams_add_library)
-    set(options OPTIONAL_CAIROMM)
+    set(options)
     set(oneValueArgs NAME EXPORT_SUBDIR)
     set(multiValueArgs SOURCES HEADERS PUBLIC_INCLUDE_DIRS PUBLIC_DEFINITIONS PUBLIC_COMPILE_OPTIONS PUBLIC_LINK_OPTIONS PUBLIC_LINK_LIBS)
     cmake_parse_arguments(ALIB "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -43,9 +43,6 @@ function(adaptagrams_add_library)
     if(ALIB_PUBLIC_INCLUDE_DIRS)
         target_include_directories(${_obj} PRIVATE ${ALIB_PUBLIC_INCLUDE_DIRS})
     endif()
-    if(ALIB_OPTIONAL_CAIROMM AND DEFINED HAVE_CAIROMM AND HAVE_CAIROMM)
-        target_include_directories(${_obj} PRIVATE ${CAIROMM_INCLUDE_DIRS})
-    endif()
 
     set(_variants "")
     foreach(_kind STATIC SHARED)
@@ -82,20 +79,6 @@ function(adaptagrams_add_library)
             if(ALIB_PUBLIC_LINK_LIBS)
                 # Link dependencies to variant; chooser gets them later
                 target_link_libraries(${_variant} PUBLIC ${ALIB_PUBLIC_LINK_LIBS})
-            endif()
-
-            if(ALIB_OPTIONAL_CAIROMM AND DEFINED HAVE_CAIROMM AND HAVE_CAIROMM)
-                foreach(_cinc IN LISTS CAIROMM_INCLUDE_DIRS)
-                    target_include_directories(${_variant} PUBLIC
-                        $<BUILD_INTERFACE:${_cinc}>
-                    )
-                endforeach()
-                if(CAIROMM_LIBRARY_DIRS)
-                    target_link_directories(${_variant} PUBLIC ${CAIROMM_LIBRARY_DIRS})
-                endif()
-                if(CAIROMM_LIBRARIES)
-                    target_link_libraries(${_variant} PUBLIC ${CAIROMM_LIBRARIES})
-                endif()
             endif()
 
             target_sources(${_variant} PUBLIC

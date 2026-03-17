@@ -29,13 +29,15 @@
  */
 #include <valarray>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #include <libcola/convex_hull.h>
+#include <libcola/svg_writer.h>
 #include "graphlayouttest.h"
 
 #include <string>
 #include <iostream>
-#include <cairomm/context.h>
-#include <cairomm/surface.h>
+#include <sstream>
 
 /* M_PI is defined in math.h in the case of Microsoft Visual C++ */
 #if defined(_MSC_VER)
@@ -45,6 +47,7 @@
 #include <math.h>
 #endif 
 using namespace std;
+using namespace cola;
 
 typedef vector<unsigned> Hull;
 /**
@@ -83,7 +86,7 @@ void tworects(valarray<double>& X, valarray<double>& Y, Hull& expectedHull) {
     copy(hull,hull+m,expectedHull.begin());
 }
 
-int drawCairo(const string& fname,
+int drawSVG(const string& fname,
         const valarray<double>& X, const valarray<double>& Y, 
         const Hull& hull);
 
@@ -96,22 +99,22 @@ int main(int argc, char** argv) {
     pair<Hull::iterator,Hull::iterator> r
         =mismatch(h.begin(),h.end(),expectedHull.begin());
     assert(r.first==h.end());
-    drawCairo("convex_tworects.svg",X,Y,h);
+    drawSVG("convex_tworects.svg",X,Y,h);
 
     randTest(20,X,Y);
     hull::convex(X,Y,h);
-    drawCairo("convex_hull_random.svg",X,Y,h);
+    drawSVG("convex_hull_random.svg",X,Y,h);
     return 0;
 }
 
-/***********CAIRO CODE***************************************************/
+/***********SVG CODE***************************************************/
 double width = 600;
 double height = 400;
 double border=10;
-void dot(Cairo::RefPtr<Cairo::Context> & cr, double x, double y) {
-    cr->arc(x, y, 
+void dot(SVGWriter& svg, double x, double y) {
+    svg.arc(x, y, 
             2., 0.0, 2.0 * M_PI);
-    cr->stroke();
+    svg.stroke();
 }
 
 double xcoord(double x) {
@@ -120,10 +123,9 @@ double xcoord(double x) {
 double ycoord(double y) {
     return border+y*height;
 }
-int drawCairo(const string& fname,
+int drawSVG(const string& fname,
         const valarray<double>& Xin, const valarray<double>& Yin, 
         const Hull& hull) {
-#ifdef CAIRO_HAS_SVG_SURFACE
     unsigned n=Xin.size();
     assert(Yin.size()==n);
 
@@ -134,49 +136,38 @@ int drawCairo(const string& fname,
     X/=X.max();
     Y/=Y.max();
 
-    Cairo::RefPtr<Cairo::SvgSurface> surface =
-        Cairo::SvgSurface::create(fname, width+2*border, height+2*border);
+    SVGWriter svg(width+2*border, height+2*border);
 
-    Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(surface);
-
-    cr->save(); // save the state of the context
-    cr->set_source_rgba(0.0, 0.0, 0.0, 0.7);
+    svg.save(); // save the state of the context
+    svg.set_source_rgba(0.0, 0.0, 0.0, 0.7);
     // draw a circle at each coordinate
     for(unsigned i=0;i<n;i++) {
-        dot(cr,xcoord(X[i]),ycoord(Y[i]));
+        dot(svg,xcoord(X[i]),ycoord(Y[i]));
     }
 
-    cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);
-    cr->move_to(xcoord(X[hull[0]]),ycoord(Y[hull[0]]));
+    svg.set_source_rgba(0.0, 0.0, 0.0, 0.3);
+    svg.move_to(xcoord(X[hull[0]]),ycoord(Y[hull[0]]));
     for(unsigned i=1;i<hull.size();i++) {
-        cr->line_to(xcoord(X[hull[i]]),ycoord(Y[hull[i]]));
+        svg.line_to(xcoord(X[hull[i]]),ycoord(Y[hull[i]]));
     }
-    cr->line_to(xcoord(X[hull[0]]),ycoord(Y[hull[0]]));
-    cr->stroke();
-    cr->set_source_rgba(0.0, 0.0, 0.0, 1.);
+    svg.line_to(xcoord(X[hull[0]]),ycoord(Y[hull[0]]));
+    svg.stroke();
+    svg.set_source_rgba(0.0, 0.0, 0.0, 1.);
     for(vector<unsigned>::const_iterator i=hull.begin();i!=hull.end();++i) {
         unsigned j=*i;
         stringstream ss;
         ss<<j;
         printf("p[%d]=(%f,%f)\n",j,X[j],Y[j]);
-        cr->move_to(xcoord(X[j]),ycoord(Y[j]));
-        cr->show_text(ss.str());
-        cr->stroke();
+        svg.move_to(xcoord(X[j]),ycoord(Y[j]));
+        svg.show_text(ss.str());
+        svg.stroke();
     }
-    cr->restore();
+    svg.restore();
 
-    cr->show_page();
+    svg.show_page();
 
+    svg.write_to_file(fname);
     cout << "Wrote SVG file \"" << fname << "\"" << endl;
     return 0;
-
-#else
-
-    cout << "You must compile cairo with SVG support for this example to work."
-        << endl;
-    return 1;
-
-#endif
-
 }
 // vim: filetype=cpp:expandtab:shiftwidth=4:tabstop=4:softtabstop=4 :

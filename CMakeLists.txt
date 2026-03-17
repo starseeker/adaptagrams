@@ -40,53 +40,9 @@ if(NOT DEFINED LIB_DIR)
 endif()
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${LIB_DIR}")
 
-# Adaptagrams uses Cario for some debug outputs - it is an optional dependency.
-# If the user hasn't told us what to do about tests, or if they have already
-# told us to build them, check and see if we have Cairo available.
-if(NOT DEFINED BUILD_TESTS OR BUILD_TESTS)
-    # optional cairo package
-    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-	set(package_name cairomm-1.16)
-    elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-	set(package_name cairomm-svg-1.16)
-    else()
-	set(HAVE_CAIROMM 0 CACHE BOOL "" FORCE)
-    endif()
-
-    if(DEFINED package_name)
-	find_package(PkgConfig)
-	if(PkgConfig_FOUND)
-	    pkg_check_modules(CAIROMM ${package_name})
-	    if(CAIROMM_FOUND)
-		set(HAVE_CAIROMM 1 CACHE BOOL "have cairomm on system" FORCE)
-		message(STATUS "CAIROMM_INCLUDE_DIRS: ${CAIROMM_INCLUDE_DIRS}")
-		message(STATUS "CAIROMM_LIBRARY_DIRS: ${CAIROMM_LIBRARY_DIRS}")
-		message(STATUS "CAIROMM_LIBRARIES: ${CAIROMM_LIBRARIES}")
-		message(STATUS "CAIROMM_CFLAGS: ${CAIROMM_CFLAGS}")
-		message(STATUS "CAIROMM_LDFLAGS: ${CAIROMM_LDFLAGS}")
-	    else()
-		message(STATUS "${package_name} NOT FOUND")
-		set(HAVE_CAIROMM 0 CACHE BOOL "" FORCE)
-	    endif()
-	else()
-	    message(STATUS "PkgConfig NOT FOUND")
-	    set(HAVE_CAIROMM 0 CACHE BOOL "" FORCE)
-	endif()
-    endif()
-
-    if (BUILD_TESTS AND NOT HAVE_CAIROMM)
-	# Since BUILD_TESTS can't work without Cairo, explicitly override the
-	# user supplied BUILD_TESTS activation.
-	message(WARNING "BUILD_TESTS enabled, but Cairo not found - disabling")
-	unset(BUILD_TESTS CACHE)
-	unset(BUILD_TESTS)
-    endif()
-endif()
-if(DEFINED HAVE_CAIROMM AND HAVE_CAIROMM)
-  set(_default_BUILD_TESTS ON)
-else()
-  set(_default_BUILD_TESTS OFF)
-endif()
+# Adaptagrams uses a built-in SVG writer for debug outputs.
+# No external dependencies are required for building tests.
+option(BUILD_TESTS "Enable building tests" ON)
 
 # The optional Python support requires both Python and SWIG.  Like the debug
 # case, check if we have what we need.
@@ -109,7 +65,7 @@ endif()
 
 # Build options
 option(BUILD_SWIG_PYTHON "Enable building swig python wrapper" OFF)
-option(BUILD_TESTS "Enable building tests" ${_default_BUILD_TESTS})
+# BUILD_TESTS option is defined above
 
 # If you enable the following option, find_package calls identifying the
 # installed version from these outputs will prefer to use the static versions

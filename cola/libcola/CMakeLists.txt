@@ -14,6 +14,7 @@ set(LIB_SOURCES
     pseudorandom.cpp
     shapepair.cpp
     straightener.cpp
+    svg_writer.cpp
 )
 
 set(LIB_HEADERS
@@ -36,6 +37,7 @@ set(LIB_HEADERS
     shortest_paths.h
     sparse_matrix.h
     straightener.h
+    svg_writer.h
     unused.h
 )
 
@@ -48,7 +50,6 @@ adaptagrams_add_library(
     PUBLIC_DEFINITIONS ${COMMON_COMPILE_DEFINITIONS}
     PUBLIC_LINK_OPTIONS ${COMMON_LINK_OPTIONS}
     PUBLIC_LINK_LIBS adaptagrams::vpsc
-    OPTIONAL_CAIROMM
 )
 
 if(BUILD_TESTS)

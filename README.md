@@ -85,7 +85,7 @@ We use GNU `automake` to build.  We've tried to make the contents of the
 repository as platform agnostic as possible, so you'll need to call `aclocal`,
 `autoconf`, and `automake` before `configure`.
 
-The only dependency is [Cairo][cairo] if debugging SVG output is to be included in several example test cases.  The libraries themselves have no dependencies.
+The libraries have no external dependencies and can be built standalone.
 
 Run `./autogen.sh` to compile from scratch.
 
@@ -93,16 +93,16 @@ Run `./autogen.sh` to compile from scratch.
 
 Alternatively, you can use [cmake](https://cmake.org) to build as well.
 
-In this case, the following installs `cmake` if required and also optional dependencies on MacOS:
+In this case, the following installs `cmake` if required on MacOS:
 
 ```sh
-brew install cmake python swig cairomm
+brew install cmake
 ```
 
 and similarly on a debian based Linux system:
 
 ```sh
-sudo apt install cmake swig libcairomm-1.16-dev
+sudo apt install cmake
 ```
 
 Then, to build the adaptagrams libraries, one can type `make` or:
@@ -118,7 +118,14 @@ mkdir -p build && cd build \
  && cmake .. -DBUILD_TESTS=ON && cmake --build . --config Release
 ```
 
-To build the libraries with the swig python extension, type `make python` or:
+To build the libraries with the swig python extension, you need Python and SWIG. Install them first:
+
+```sh
+brew install python swig  # On macOS
+sudo apt install swig python3-dev  # On Linux
+```
+
+Then type `make python` or:
 
 ```sh
 mkdir -p build && cd build \
@@ -132,6 +139,10 @@ Bindings for use of the Adaptagrams libraries can be generated using [SWIG][swig
 ## Cola in the browser
 
 [cola.js][webcola] (a.k.a. WebCola) is a JavaScript based rewrite of libcola which works well with [D3.js][d3]
+
+## Note on Experimental Code
+
+The `experimental` directory contains experimental code that is not built by default. Some of this code (e.g., `experimental/draw-bn`) still uses Cairo and Pango for advanced text rendering features. These experimental programs are not part of the main Adaptagrams libraries and are not required for normal usage.
 
 [d3]: http://d3js.org/
 [webcola]: http://ialab.it.monash.edu/webcola/

@@ -1,10 +1,10 @@
 EXTRA_DIST=libcola.pc.in
 
 lib_LTLIBRARIES = libcola.la
-libcola_la_CPPFLAGS = -I$(top_srcdir) $(CAIROMM_CFLAGS) -I$(includedir)/libcola -fPIC
+libcola_la_CPPFLAGS = -I$(top_srcdir) -I$(includedir)/libcola -fPIC
 
 # Depends on libvpsc
-libcola_la_LIBADD = $(top_builddir)/libvpsc/libvpsc.la $(CAIROMM_LIBS)
+libcola_la_LIBADD = $(top_builddir)/libvpsc/libvpsc.la
 
 libcola_la_SOURCES = cola.h\
 	cola.cpp\
@@ -27,6 +27,8 @@ libcola_la_SOURCES = cola.h\
 	pseudorandom.cpp \
 	output_svg.cpp\
 	output_svg.h \
+	svg_writer.cpp\
+	svg_writer.h \
 	unused.h \
 	cc_clustercontainmentconstraints.cpp \
 	cc_clustercontainmentconstraints.h \
@@ -48,6 +50,7 @@ libcolainclude_HEADERS = cola.h\
 	sparse_matrix.h\
 	straightener.h \
 	output_svg.h \
+	svg_writer.h \
 	unused.h \
 	cc_clustercontainmentconstraints.h \
 	cc_nonoverlapconstraints.h \
