@@ -53,4 +53,5 @@ add_project_test(NAME quadprogpptest
     quadprogpp/QuadProg++.h
     quadprogpp/QuadProg++.cc
 )
+add_project_test(NAME project_validate SOURCES project_validate.cpp)
 

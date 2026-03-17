@@ -79,4 +79,5 @@ add_cola_test(NAME unsatisfiable SOURCES unsatisfiable.cpp)
 add_cola_test(NAME invalid SOURCES invalid.cpp)
 add_cola_test(NAME makefeasible SOURCES makefeasible02.cpp)
 add_cola_test(NAME shortest_paths SOURCES shortest_paths.cpp)
+add_cola_test(NAME cola_validate SOURCES cola_validate.cpp)
 
