@@ -1,11 +1,11 @@
-# .github/workflows/copilot-setup-steps.yml
+# .github/copilot-setup-steps.yml
 name: "Copilot Setup Steps"
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - .github/workflows/copilot-setup-steps.yml
+      - .github/copilot-setup-steps.yml
 
 jobs:
   # This job ID is MANDATORY for the agent to pick up the file
