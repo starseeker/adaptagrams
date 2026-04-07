@@ -750,12 +750,12 @@ void Tree::addConstraints(Graph &G, bool alignRoot) {
     bool isVertical = Compass::isVerticalCard(m_growthDir);
     // Function to compare Nodes by their transverse coordinate:
     std::function<bool(Node_SP, Node_SP)> transCoordCmp = isVertical ?
-                [](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().x < b->getCentre().x; } :
-                [](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().y < b->getCentre().y; } ;
+                std::function<bool(Node_SP, Node_SP)>([](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().x < b->getCentre().x; }) :
+                std::function<bool(Node_SP, Node_SP)>([](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().y < b->getCentre().y; }) ;
     // Funciton to compare Nodes by their axial dimension:
     std::function<bool(Node_SP, Node_SP)> axialMeasureCmp = isVertical ?
-                [](const Node_SP &a, const Node_SP &b)->bool{ return a->getDimensions().second < b->getDimensions().second; } :
-                [](const Node_SP &a, const Node_SP &b)->bool{ return a->getDimensions().first < b->getDimensions().first; } ;
+                std::function<bool(Node_SP, Node_SP)>([](const Node_SP &a, const Node_SP &b)->bool{ return a->getDimensions().second < b->getDimensions().second; }) :
+                std::function<bool(Node_SP, Node_SP)>([](const Node_SP &a, const Node_SP &b)->bool{ return a->getDimensions().first < b->getDimensions().first; }) ;
     // The direction in which to separate Nodes belonging to a common rank:
     CardinalDir intraRankSepDir = isVertical ? CardinalDir::EAST : CardinalDir::SOUTH;
     // The direction in which to separate Nodes belonging to neighbouring ranks:
@@ -862,8 +862,8 @@ void Tree::addBufferNodesAndConstraints(Graph &G, NodesById &bufferNodes) {
     bool isVertical = Compass::isVerticalCard(m_growthDir);
     // Function to compare Nodes by their transverse coordinate:
     std::function<bool(Node_SP, Node_SP)> transCoordCmp = isVertical ?
-                [](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().x < b->getCentre().x; } :
-                [](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().y < b->getCentre().y; } ;
+                std::function<bool(Node_SP, Node_SP)>([](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().x < b->getCentre().x; }) :
+                std::function<bool(Node_SP, Node_SP)>([](const Node_SP &a, const Node_SP &b)->bool{ return a->getCentre().y < b->getCentre().y; }) ;
     for (auto rankIt = std::next(m_nodesByRank.begin()); rankIt != m_nodesByRank.end(); ++rankIt) {
         Nodes rank = *rankIt;
         std::sort(rank.begin(), rank.end(), transCoordCmp);

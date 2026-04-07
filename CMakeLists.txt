@@ -18,7 +18,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} CACHE PATH "" FORCE)
 
 # use ccache if available
 option(ENABLE_CCACHE "Use ccache if available" ON)
-if(ENABLE_CCACHE)
+if(ENABLE_CCACHE AND NOT MSVC)
     find_program(CCACHE_PROGRAM ccache)
     if(CCACHE_PROGRAM)
         message(STATUS "Found ccache in ${CCACHE_PROGRAM}")
